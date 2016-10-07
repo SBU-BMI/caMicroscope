@@ -36,6 +36,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
     'date': Date.now()
   }
   
+  console.log(geoJSONTemplateTypePoint);
   return geoJSONTemplateTypePoint;
 }
 
@@ -43,31 +44,34 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
 // under development
 annotools.prototype.convertCircleToGeo = function (annotation) {
  
-  var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y))
-  
-  /* Compute footprint(area)*/
-  var physicalX1 = this.imagingHelper.logicalToPhysicalX(annotation.x);
-  var physicalY1 = this.imagingHelper.logicalToPhysicalY(annotation.y);
- 
-  var helper = this.imagingHelper;
-  var dataX1 = helper.physicalToDataX(physicalX1);
-  var dataY1 = helper.physicalToDataY(physicalY1);
-  
-  // The area of circle is pi times the square of its radius.
-  var radius = 3;
-  var area = radius * radius * Math.PI;
+    var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y))
+	var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x + annotation.w), this.imagingHelper.physicalToDataY(annotation.y + annotation.h))
 
-  var coordinates = [];
-  var x = annotation.x;
-  var y = annotation.y;
-  var geoAnnot = this.generateGeoTemplateTypePoint();
-  coordinates.push([]);
-  // coordinates[0].push([])
-  coordinates[0].push([x, y]);
-  geoAnnot.x = x
-  geoAnnot.y = y;
-  geoAnnot.footprint = area;
-  geoAnnot.geometry.coordinates = coordinates;
+    /* Compute footprint(area)*/
+	var physicalW = this.imagingHelper.logicalToPhysicalX(annotation.w);
+	var helper = this.imagingHelper;
+	var dataW  = helper.physicalToDataX(physicalW);
+	var radius = dataW / 2;
+	
+	var area = radius * radius * Math.PI;
+    
+	var coordinates = [];
+	var x = annotation.x;
+	var y = annotation.y;
+	var w = annotation.w;
+	var h = annotation.h;
+	var r = w / 2;
+	var cx = x + r;
+	var cy = y + r;
+	var geoAnnot = this.generateGeoTemplate();
+	coordinates.push([]);
+	// coordinates[0].push([])
+	coordinates[0].push([cx, cy]);
+	geoAnnot.x = x;
+	geoAnnot.y = y;
+	geoAnnot.footprint = area;
+	geoAnnot.geometry.coordinates = coordinates;
 
   return geoAnnot;
 }
+
