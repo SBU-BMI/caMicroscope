@@ -41,6 +41,11 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
 }
 
 
+annotools.prototype.test = function() {
+    alert('hello alina');
+}
+
+
 // under development
 annotools.prototype.convertCircleToGeo = function (annotation) {
  
@@ -63,7 +68,7 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 	var r = w / 2;
 	var cx = x + r;
 	var cy = y + r;
-	var geoAnnot = this.generateGeoTemplate();
+	var geoAnnot = this.generateGeoTemplateTypePoint();
 	coordinates.push([]);
 	// coordinates[0].push([])
 	coordinates[0].push([cx, cy]);
