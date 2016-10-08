@@ -119,11 +119,225 @@ annotools.prototype.drawDots = function() {
 	
 }
 
+// this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
+annotools.prototype.convertToNativeCoord = function (annot) {
+}
 
-// @deprecated
+//function convertFromNative (line)
+annotools.prototype.convertFromNativeCoord = function (annot, end) {
+    
+    var x = annot.x;
+    var y = annot.y;
+    var w = annot.w;
+    var h = annot.h;
+    var x_end = end.x;
+    var y_end = end.y;
+
+    var nativeX_end = this.imagingHelper.physicalToLogicalX(x_end);
+    var nativeY_end = this.imagingHelper.physicalToLogicalY(y_end);
+    var nativeX = this.imagingHelper.physicalToLogicalX(x);
+    var nativeY = this.imagingHelper.physicalToLogicalY(y);
+    var nativeW = nativeX_end - nativeX;
+    //var nativeH = nativeY_end - nativeY;
+	var nativeH = nativeW;
+
+    var globalNumber = JSON.encode({nativeW: nativeW, nativeH: nativeH, nativeX: nativeX, nativeY: nativeY});
+
+    return globalNumber;
+}
+
+annotools.prototype.convertAllToNativeCoord = function () {
+
+}
+
+
+// this function contains bbox can I reuse it? (lien: 919)
+annotools.prototype.relativeToGlobalCoord = function () {
+	
+    for (var i = 0; i < $('viewport').getChildren().length; i++) {
+        var object = $('viewport').getChildren()[i];
+        var bbox = object.getBBox();
+		var objectCenterPt = new OpenSeadragon.Point(bbox.x + bbox.width / 2, bbox.y + bbox.height / 2);
+        console.log('bbox: ' + bbox);
+        var objectCenterRelPt = this.viewer.viewport.pointFromPixel(objectCenterPt);
+        this.annotationHandler.objectCenterPts[i] = objectCenterRelPt;
+        var originalCoord = {};
+		originalCoord.cx = objectCenterPt.x;
+        originalCoord.cy = objectCenterPt.y;
+        var points = String.split(object.getAttribute('points').trim(), ' ');
+
+        var distances = [];
+		for (var j = 0; j < points.length; j++) {
+            var pointPair = String.split(points[j], ',');
+            var point = new OpenSeadragon.Point(parseFloat(pointPair[0]), parseFloat(pointPair[1]));
+        var relPt = this.viewer.viewport.pointFromPixel(point);
+        var dist = relPt.minus(objectCenterRelPt);
+        distances.push(dist);
+      }
+
+      this.annotationHandler.originalCoords[object.id] = {center: objectCenterRelPt,distances: distances};
+    }
+	
+}
+
+
+// @deprecated 
+// testing
 annotools.prototype.showDotTools = function() {
     
     // redirect
-    window.location = 'http://129.49.249.191/camicroscope_alina/testaj/test.html';
+    //window.location = 'http://129.49.249.191/camicroscope_alina/testaj/test.html';
+	//annotools.generateGeoTemplateTypePoint();
+	var annotools = this;
+    var pointsArr = [];
+	var radius    = 4;
 	
+    var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
+    // console.log(container);
+	
+    var left = parseInt(container.offsetLeft),
+        top = parseInt(container.offsetTop),
+        width = parseInt(container.offsetWidth),
+        height = parseInt(container.offsetHeight);
+    console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
+    if ( left < 0 ) {
+        left = 0;
+        width = window.innerWidth;
+    } // see if the container is outside the current viewport
+    if ( top < 0 ) {
+        top = 0;
+        height = window.innerHeight;
+    }
+	
+    this.drawLayer.hide();
+    this.magnifyGlass.hide();  // hide the Magnifying Tool
+        
+        
+    var markup_svg = document.getElementById('markups');
+    if (markup_svg) {
+        // console.log("destroying")
+        markup_svg.destroy();
+    }
+	
+    if (this.svg) {
+        this.svg.html = '';
+        this.svg.destroy();
+    }
+	
+    /* svgHtml */
+    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 2px solid #ffff00">';
+        svgHtml += '<g id="groupcenter"/>';
+        svgHtml += '<g id="origin">';
+    var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5));
+        svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4 + '" style="display: none"/>';
+        svgHtml += '</g>';
+        svgHtml += '<g id="viewport" transform="translate(0,0)">';
+        svgHtml += '</g>';
+
+    this.svg = new Element('div', {
+        styles: {
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%'
+        },
+        html: svgHtml
+    }).inject(container);
+	
+    // prevent zoom when the SVG overlay is clicked
+    jQuery('#markups').mousedown(function (event) {
+        //console.log(event.which);
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+    });
+    
+    // d3.js
+    var svgHtmlDot = d3.select('svg');
+    var viewPort =  d3.select('#viewport');
+   
+    // group circle elements together
+    var circleGroup = viewPort.append('g');
+    
+    //.on(action, fn) syntax for attaching an event listener to a DOM selection
+    svgHtmlDot.on('click', function() {
+        var creation = Date.now();    // the number of milliseconds since midnight January 1, 1970
+        var pointCoords = d3.mouse(this);
+        //var xCenterPt = Math.round(pointCoords[0]);
+        //var yCenterPt = Math.round(pointCoords[1]);
+		var xCenterPt = pointCoords[0];
+        var yCenterPt = pointCoords[1];
+		
+        console.log(xCenterPt + ' ' + yCenterPt);
+        
+        var svgCircle = circleGroup.append('circle')
+            .attr('cx', xCenterPt)
+            .attr('cy', yCenterPt)
+            .attr('r', radius)
+            .style('fill', '#ffff00')
+		    .style('cursor', 'pointer')
+            .attr('id', 'circle_' + creation)
+            .on('contextmenu', function (d, i) {
+                d3.event.preventDefault();
+                // react on right-clicking;
+                // removeCircle('circle_' + creation);
+                d3.selectAll('g #' + 'circle_' + creation).remove();
+            });
+        
+        var svgTooltip = svgCircle.append('title')    // tooltip - circle x, y
+            .text(function() {
+                return xCenterPt + ', ' + yCenterPt;	  
+            });
+		
+		// coord start
+		var min_x, min_y, max_x, max_y, w, h;
+		min_x = xCenterPt - radius;
+        min_y = yCenterPt - radius;
+        max_x = xCenterPt + radius;
+        max_y = yCenterPt + radius;
+        w = Math.abs(max_x - min_x);
+        h = Math.abs(max_y - min_y);
+		console.log('min: ' + min_x + ', ' + min_y);
+		console.log('max: ' + max_x + ', ' + max_y);
+		console.log('w and h: ' + w + ', ' + h);
+		
+        var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+        var newAnnot = {
+            x: startRelativeMousePosition.x,
+            y: startRelativeMousePosition.y,
+            w: w,
+			h: h,
+			type: 'circle',
+			color: this.color,
+            loc: []
+		}
+		
+		console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
+		console.log(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+        var globalNumbers = JSON.parse(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+        newAnnot.x = globalNumbers.nativeX;
+        newAnnot.y = globalNumbers.nativeY;
+        newAnnot.w = globalNumbers.nativeW;
+        newAnnot.h = globalNumbers.nativeH;
+        var loc = [];
+        loc[0] = parseFloat(newAnnot.x);
+        loc[1] = parseFloat(newAnnot.y);
+        newAnnot.loc = loc;
+		console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
+		
+		// line - 1231
+		// convertFromNative = function (annot, end)
+		// convert to geojson 
+        var geoNewAnnot = annotools.convertCircleToGeo(newAnnot);
+        console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+        
+        //this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
+		annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
+		
+        jQuery("svg").css("cursor", "default");
+        jQuery("#drawDotButton").removeClass("active");
+		
+    });
 }
