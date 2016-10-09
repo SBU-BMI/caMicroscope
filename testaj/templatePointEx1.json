@@ -1,0 +1,43 @@
+{
+    "type": "Feature",
+    "parent_id": "self",
+    "randval": 0.058955195712425024,
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            [
+                [
+                    0.5838280570688338,
+                    0.2900324378194435
+                ]
+            ]
+        ]
+    },
+    "normalized": true,
+    "object_type": "nucleus",
+    "properties": {
+        "scalar_features": [],
+        "annotations": {
+            "region": "Lymphocyte",
+            "additional_annotation": "",
+            "additional_notes": "",
+            "secret": "human1"
+        }
+    },
+    "footprint": 50.265482457433656,
+    "provenance": {
+        "analysis": {
+            "execution_id": "humantest",
+            "study_id": "",
+            "source": "human",
+            "computation": "detection"
+        },
+        "image": {
+            "case_id": "TCGA-55-8089-01Z-00-DX1",
+            "subject_id": "TCGA-55-8089"
+        }
+    },
+    "date": 1476042595576,
+    "x": 0.5836195499795928,
+    "y": 0.28982393073020246
+}
