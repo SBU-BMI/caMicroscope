@@ -190,6 +190,7 @@ annotools.prototype.showDotTools = function() {
 	//annotools.generateGeoTemplateTypePoint();
 	var annotools = this;
     var pointsArr = [];
+	var geoJSONs  = [];
 	var radius    = 4;
 	
     var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
@@ -325,19 +326,133 @@ annotools.prototype.showDotTools = function() {
         loc[0] = parseFloat(newAnnot.x);
         loc[1] = parseFloat(newAnnot.y);
         newAnnot.loc = loc;
-		console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
+		//console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
 		
 		// line - 1231
 		// convertFromNative = function (annot, end)
 		// convert to geojson 
         var geoNewAnnot = annotools.convertCircleToGeo(newAnnot);
-        console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+        //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+		
+		geoJSONs.push(geoNewAnnot);
+		//console.log("geoJSONs length: " + geoJSONs.length);
+		//console.log(geoJSONs);
+		
+		//annotools.test();
         
         //this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
-		annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
+		//annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
+		annotools.promptForAnnotations(geoJSONs, 'new', annotools, null);
 		
         jQuery("svg").css("cursor", "default");
         jQuery("#drawDotButton").removeClass("active");
 		
     });
 }
+
+
+annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools, ctx) {
+  jQuery('#panel').show('slide')
+  //console.log(newAnnots);
+  jQuery('panel').html('');
+  jQuery('#panel').html('' +
+    "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
+    + "<div id='panelBody'>"
+    + "<form id ='annotationsForm' action='#'>"
+    + '</form>'
+
+    + '</div>'
+  )
+  jQuery.get('api/Data/retrieveTemplate.php', function (data) {
+    console.log(data);
+    var schema = JSON.parse(data)
+    schema = JSON.parse(schema)[0]
+    console.log(schema)
+    // console.log("retrieved template")
+    var formSchema = {
+      'schema': schema,
+      'form': [
+        '*',
+        {
+          'type': 'submit',
+          'title': 'Submit'
+
+        },
+        {
+          'type': 'button',
+          'title': 'Cancel',
+          'onClick': function (e) {
+            console.log(e)
+            e.preventDefault()
+            // console.log("cancel")
+            cancelAnnotation()
+          }
+        }
+      ]
+    }
+
+    formSchema.onSubmit = function (err, val) {
+      // Add form data to annotation
+	  var count = 1;
+	  for(i = 0; i < newAnnots.length; i++) 
+	  { //for loop start
+		  var annotation = newAnnots[i];
+          annotation.properties.annotations = val
+
+          // Post annotation
+          // annotools.addnewAnnot(annotation)
+		  // POST start
+		  var self = this;
+          console.log('Save annotation function')
+          console.log(annotation)
+          jQuery.ajax({
+              'type': 'POST',
+              url: 'api/Data/getAnnotSpatial.php',
+              data: annotation,
+              success: function (res, err) {
+                  console.log("response: ")
+                  console.log(res)
+				  if (count === newAnnots.length){
+                      if(res == "unauthorized"){
+                          alert("Error saving markup! Wrong secret");
+                      } else {   
+                          alert("Successfully saved markup!");
+                      }
+				  }
+                  console.log(err)
+                  //self.getMultiAnnot();
+                  console.log('succesfully posted' + count + 'newAnnots length: ' + newAnnots.length);
+				  count ++;
+              }
+          })
+		  
+		  // POST end
+		  
+		  /*
+		  jQuery('#panel').hide('slide')
+          annotools.drawLayer.hide()
+          annotools.svg.hide()
+          annotools.addMouseEvents()
+          return false
+		  */
+	  }
+      // Hide Panel
+      jQuery('#panel').hide('slide')
+      annotools.drawLayer.hide()
+      annotools.svg.hide()
+      annotools.addMouseEvents()
+
+      return false
+    }
+
+    var cancelAnnotation = function () {
+      console.log('cancel handler')
+      jQuery('#panel').hide('slide')
+      annotools.drawLayer.hide()
+      annotools.svg.hide()
+      annotools.addMouseEvents()
+    }
+
+    jQuery('#annotationsForm').jsonForm(formSchema)
+  })
+}	 
