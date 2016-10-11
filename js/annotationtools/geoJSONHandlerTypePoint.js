@@ -18,7 +18,9 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
     'object_type': 'nucleus', // nucleus?
     'properties': {
       'scalar_features': [],
-      'annotations': []
+      'annotations': [],
+      'radius': 4,
+      'polygon_object_ids': []
     },
     'footprint': 10000,
     'provenance': {
@@ -40,10 +42,11 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
   return geoJSONTemplateTypePoint;
 }
 
-
+/*
 annotools.prototype.test = function() {
     alert('hello alina');
 }
+*/
 
 
 // under development
@@ -72,8 +75,13 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 	coordinates.push([]);
 	// coordinates[0].push([])
 	coordinates[0].push([cx, cy]);
-	geoAnnot.x = x;
-	geoAnnot.y = y;
+	//geoAnnot.x = x;
+	//geoAnnot.y = y;
+    geoAnnot.x = cx;
+    geoAnnot.y = cy;
+    
+    geoAnnot.properties.radius = r;
+    
 	geoAnnot.footprint = area;
 	geoAnnot.geometry.coordinates = coordinates;
 
