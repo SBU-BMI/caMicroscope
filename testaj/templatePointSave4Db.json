@@ -1,0 +1,221 @@
+> db.objects.find().sort({"_id": -1}).limit(5).pretty();
+{
+        "_id" : ObjectId("57fd39eb6dde5ced3ae5d180"),
+        "type" : "Feature",
+        "parent_id" : "self",
+        "randval" : 0.71194748699724,
+        "geometry" : {
+                "type" : "Point",
+                "coordinates" : [
+                        [
+                                [
+                                        0.59920961677104,
+                                        0.23669032453662
+                                ]
+                        ]
+                ]
+        },
+        "normalized" : "true",
+        "object_type" : "nucleus",
+        "properties" : {
+                "annotations" : {
+                        "region" : "Lymphocyte",
+                        "additional_annotation" : "test save 4",
+                        "additional_notes" : "",
+                        "secret" : "human1"
+                },
+                "radius" : 0.00020850708924103
+        },
+        "footprint" : 50.265482457434,
+        "provenance" : {
+                "analysis" : {
+                        "execution_id" : "humantest",
+                        "study_id" : "",
+                        "source" : "human",
+                        "computation" : "detection"
+                },
+                "image" : {
+                        "case_id" : "TCGA-55-8089-01Z-00-DX1",
+                        "subject_id" : "TCGA-55-8089"
+                }
+        },
+        "date" : NumberLong("1476214165273"),
+        "x" : 0.59920961677104,
+        "y" : 0.23669032453662
+}
+{
+        "_id" : ObjectId("57fd39eb6dde5ced3ae5d17f"),
+        "type" : "Feature",
+        "parent_id" : "self",
+        "randval" : 0.40992126479563,
+        "geometry" : {
+                "type" : "Point",
+                "coordinates" : [
+                        [
+                                [
+                                        0.5974894332848,
+                                        0.23858768211911
+                                ]
+                        ]
+                ]
+        },
+        "normalized" : "true",
+        "object_type" : "nucleus",
+        "properties" : {
+                "annotations" : {
+                        "region" : "Lymphocyte",
+                        "additional_annotation" : "test save 4",
+                        "additional_notes" : "",
+                        "secret" : "human1"
+                },
+                "radius" : 0.00020850708924103
+        },
+        "footprint" : 50.265482457434,
+        "provenance" : {
+                "analysis" : {
+                        "execution_id" : "humantest",
+                        "study_id" : "",
+                        "source" : "human",
+                        "computation" : "detection"
+                },
+                "image" : {
+                        "case_id" : "TCGA-55-8089-01Z-00-DX1",
+                        "subject_id" : "TCGA-55-8089"
+                }
+        },
+        "date" : NumberLong("1476214163962"),
+        "x" : 0.5974894332848,
+        "y" : 0.23858768211911
+}
+{
+        "_id" : ObjectId("57fd39eb6dde5ced3ae5d17e"),
+        "type" : "Feature",
+        "parent_id" : "self",
+        "randval" : 0.064513874663408,
+        "geometry" : {
+                "type" : "Point",
+                "coordinates" : [
+                        [
+                                [
+                                        0.601555321525,
+                                        0.23428391979785
+                                ]
+                        ]
+                ]
+        },
+        "normalized" : "true",
+        "object_type" : "nucleus",
+        "properties" : {
+                "annotations" : {
+                        "region" : "Lymphocyte",
+                        "additional_annotation" : "test save 4",
+                        "additional_notes" : "",
+                        "secret" : "human1"
+                },
+                "radius" : 0.00020850708924103
+        },
+        "footprint" : 50.265482457434,
+        "provenance" : {
+                "analysis" : {
+                        "execution_id" : "humantest",
+                        "study_id" : "",
+                        "source" : "human",
+                        "computation" : "detection"
+                },
+                "image" : {
+                        "case_id" : "TCGA-55-8089-01Z-00-DX1",
+                        "subject_id" : "TCGA-55-8089"
+                }
+        },
+        "date" : NumberLong("1476214162474"),
+        "x" : 0.601555321525,
+        "y" : 0.23428391979785
+}
+{
+        "_id" : ObjectId("57fd39eb6dde5ced3ae5d17d"),
+        "type" : "Feature",
+        "parent_id" : "self",
+        "randval" : 0.65736114888225,
+        "geometry" : {
+                "type" : "Point",
+                "coordinates" : [
+                        [
+                                [
+                                        0.60061703962342,
+                                        0.23243283922957
+                                ]
+                        ]
+                ]
+        },
+        "normalized" : "true",
+        "object_type" : "nucleus",
+        "properties" : {
+                "annotations" : {
+                        "region" : "Lymphocyte",
+                        "additional_annotation" : "test save 4",
+                        "additional_notes" : "",
+                        "secret" : "human1"
+                },
+                "radius" : 0.00020850708924108
+        },
+        "footprint" : 50.265482457487,
+        "provenance" : {
+                "analysis" : {
+                        "execution_id" : "humantest",
+                        "study_id" : "",
+                        "source" : "human",
+                        "computation" : "detection"
+                },
+                "image" : {
+                        "case_id" : "TCGA-55-8089-01Z-00-DX1",
+                        "subject_id" : "TCGA-55-8089"
+                }
+        },
+        "date" : NumberLong("1476214160066"),
+        "x" : 0.60061703962342,
+        "y" : 0.23243283922957
+}
+{
+        "_id" : ObjectId("57fd37eb6dde5ced3ae5d17c"),
+        "type" : "Feature",
+        "parent_id" : "self",
+        "randval" : 0.15015664895292,
+        "geometry" : {
+                "type" : "Point",
+                "coordinates" : [
+                        [
+                                [
+                                        0.66023858158635,
+                                        0.30753023665735
+                                ]
+                        ]
+                ]
+        },
+        "normalized" : "true",
+        "object_type" : "nucleus",
+        "properties" : {
+                "annotations" : {
+                        "region" : "Lymphocyte",
+                        "additional_annotation" : "Test save 3",
+                        "additional_notes" : "",
+                        "secret" : "human1"
+                },
+                "radius" : 0.00020850708924103
+        },
+        "footprint" : 50.265482457434,
+        "provenance" : {
+                "analysis" : {
+                        "execution_id" : "humantest",
+                        "study_id" : "",
+                        "source" : "human",
+                        "computation" : "detection"
+                },
+                "image" : {
+                        "case_id" : "TCGA-55-8089-01Z-00-DX1",
+                        "subject_id" : "TCGA-55-8089"
+                }
+        },
+        "date" : NumberLong("1476213658297"),
+        "x" : 0.66023858158635,
+        "y" : 0.30753023665735
+}
