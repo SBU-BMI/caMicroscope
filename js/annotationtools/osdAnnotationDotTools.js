@@ -340,62 +340,72 @@ annotools.prototype.showDotTools = function() {
                 return xCenterPt + ', ' + yCenterPt;	  
             });
 		
-	    // coord start
-	    var min_x, min_y, max_x, max_y, w, h;
-	    min_x = xCenterPt - radius;
-        min_y = yCenterPt - radius;
-        max_x = xCenterPt + radius;
-        max_y = yCenterPt + radius;
-        w = Math.abs(max_x - min_x);
-        h = Math.abs(max_y - min_y);
-	    console.log('min: ' + min_x + ', ' + min_y);
-	    console.log('max: ' + max_x + ', ' + max_y);
-	    console.log('w and h: ' + w + ', ' + h);
-		console.log('xCenterPt and yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
+		geoJSONs.length = 0;  //empty the geoJSONs array
 		
-        var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-        var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-		var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, yCenterPt).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-        var newAnnot = {
-            x: startRelativeMousePosition.x,
-            y: startRelativeMousePosition.y,
-            w: w,
-	        h: h,
-			cx: centerPtRelativeMousePosition.x,
-			cy: centerPtRelativeMousePosition.y,
-	        type: 'circle',
-	        color: this.color,
-            loc: []
-	    }
+		d3.selectAll("circle").each( function(d, i){
 		
-	    console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
-	    //console.log(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+            xCenterPt = d3.select(this).attr("cx");
+		    yCenterPt = d3.select(this).attr("cy");
 		
-        var globalNumbers = JSON.parse(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
-        newAnnot.x = globalNumbers.nativeX;
-        newAnnot.y = globalNumbers.nativeY;
-        newAnnot.w = globalNumbers.nativeW;
-        newAnnot.h = globalNumbers.nativeH;
-		newAnnot.cx = globalNumbers.nativeCx;
-		newAnnot.cy = globalNumbers.nativeCy;
-        var loc = [];
-        loc[0] = parseFloat(newAnnot.cx);
-        loc[1] = parseFloat(newAnnot.cy);
-        newAnnot.loc = loc;
-	    console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
+	        // coord start
+	        var min_x, min_y, max_x, max_y, w, h;
+	        min_x = xCenterPt - radius;
+            min_y = yCenterPt - radius;
+            max_x = xCenterPt + radius;
+            max_y = yCenterPt + radius;
+            w = Math.abs(max_x - min_x);
+            h = Math.abs(max_y - min_y);
+	        console.log('min: ' + min_x + ', ' + min_y);
+	        console.log('max: ' + max_x + ', ' + max_y);
+	        console.log('w and h: ' + w + ', ' + h);
+		    console.log('xCenterPt and yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
 		
-	    // line - 1231
-	    // convertFromNative = function (annot, end)
-	    // convert to geojson 
-        var geoNewAnnot = annotools.convertCircleToGeo(newAnnot);
-        //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+            var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+            var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		    var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, yCenterPt).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+            var newAnnot = {
+                x: startRelativeMousePosition.x,
+                y: startRelativeMousePosition.y,
+                w: w,
+	            h: h,
+			    cx: centerPtRelativeMousePosition.x,
+			    cy: centerPtRelativeMousePosition.y,
+	            type: 'circle',
+	            color: this.color,
+                loc: []
+	        }
 		
-	    geoJSONs.push(geoNewAnnot);
-	    //console.log("geoJSONs length: " + geoJSONs.length);
-	    //console.log(geoJSONs);
+	        console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
+	        //console.log(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
 		
-        //this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
-	    //annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
+            var globalNumbers = JSON.parse(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+            newAnnot.x = globalNumbers.nativeX;
+            newAnnot.y = globalNumbers.nativeY;
+            newAnnot.w = globalNumbers.nativeW;
+            newAnnot.h = globalNumbers.nativeH;
+		    newAnnot.cx = globalNumbers.nativeCx;
+		    newAnnot.cy = globalNumbers.nativeCy;
+            var loc = [];
+            loc[0] = parseFloat(newAnnot.cx);
+            loc[1] = parseFloat(newAnnot.cy);
+            newAnnot.loc = loc;
+	        console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
+		
+	        // line - 1231
+	        // convertFromNative = function (annot, end)
+	        // convert to geojson 
+            var geoNewAnnot = annotools.convertCircleToGeo(newAnnot);
+            //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+		
+	        geoJSONs.push(geoNewAnnot);
+	        //console.log("geoJSONs length: " + geoJSONs.length);
+	        //console.log(geoJSONs);
+		
+            //this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
+	        //annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
+		
+		 }); // end for each
+		
 	    annotools.promptForAnnotations(geoJSONs, 'new', annotools, null);
 		
         //jQuery("svg").css("cursor", "default");
