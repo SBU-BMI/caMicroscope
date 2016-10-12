@@ -2,9 +2,10 @@
 annotools.prototype.drawDots = function() {
 	
     // alert('comming soon...');
-
     var annotools = this;
     var pointsArr = [];
+    var geoJSONs  = [];
+    var radius    = 4;
 	
     var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
     // console.log(container);
@@ -77,15 +78,18 @@ annotools.prototype.drawDots = function() {
     //.on(action, fn) syntax for attaching an event listener to a DOM selection
     svgHtmlDot.on('click', function() {
         var creation = Date.now();    // the number of milliseconds since midnight January 1, 1970
-        var coords = d3.mouse(this);
-        var xPosition = Math.round(coords[0]);
-        var yPosition = Math.round(coords[1]);
-        console.log(xPosition + ' ' + yPosition);
+        var pointCoords = d3.mouse(this);
+        //var xCenterPt = Math.round(pointCoords[0]);
+        //var yCenterPt = Math.round(pointCoords[1]);
+		var xCenterPt = pointCoords[0];
+        var yCenterPt = pointCoords[1];
+		
+        //console.log(xCenterPt + ' ' + yCenterPt);
         
         var svgCircle = circleGroup.append('circle')
-            .attr('cx', xPosition)
-            .attr('cy', yPosition)
-            .attr('r', 4)
+            .attr('cx', xCenterPt)
+            .attr('cy', yCenterPt)
+            .attr('r', radius)
             .style('fill', '#ffff00')
 		    .style('cursor', 'pointer')
             .attr('id', 'circle_' + creation)
@@ -98,25 +102,71 @@ annotools.prototype.drawDots = function() {
         
         var svgTooltip = svgCircle.append('title')    // tooltip - circle x, y
             .text(function() {
-                return xPosition + ', ' + yPosition;	  
+                return xCenterPt + ', ' + yCenterPt;	  
             });
+		
+	    // coord start
+	    var min_x, min_y, max_x, max_y, w, h;
+	    min_x = xCenterPt - radius;
+        min_y = yCenterPt - radius;
+        max_x = xCenterPt + radius;
+        max_y = yCenterPt + radius;
+        w = Math.abs(max_x - min_x);
+        h = Math.abs(max_y - min_y);
+	    console.log('min: ' + min_x + ', ' + min_y);
+	    console.log('max: ' + max_x + ', ' + max_y);
+	    console.log('w and h: ' + w + ', ' + h);
+		console.log('xCenterPt and yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
+		
+        var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, yCenterPt).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+        var newAnnot = {
+            x: startRelativeMousePosition.x,
+            y: startRelativeMousePosition.y,
+            w: w,
+	        h: h,
+			cx: centerPtRelativeMousePosition.x,
+			cy: centerPtRelativeMousePosition.y,
+	        type: 'circle',
+	        color: this.color,
+            loc: []
+	    }
+		
+	    console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
+	    //console.log(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+		
+        var globalNumbers = JSON.parse(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+        newAnnot.x = globalNumbers.nativeX;
+        newAnnot.y = globalNumbers.nativeY;
+        newAnnot.w = globalNumbers.nativeW;
+        newAnnot.h = globalNumbers.nativeH;
+		newAnnot.cx = globalNumbers.nativeCx;
+		newAnnot.cy = globalNumbers.nativeCy;
+        var loc = [];
+        loc[0] = parseFloat(newAnnot.cx);
+        loc[1] = parseFloat(newAnnot.cy);
+        newAnnot.loc = loc;
+	    console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
+		
+	    // line - 1231
+	    // convertFromNative = function (annot, end)
+	    // convert to geojson 
+        var geoNewAnnot = annotools.convertCircleToGeo(newAnnot);
+        console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+		
+	    geoJSONs.push(geoNewAnnot);
+	    //console.log("geoJSONs length: " + geoJSONs.length);
+	    //console.log(geoJSONs);
+		
+        //this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
+	    //annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
+	    annotools.promptForAnnotations(geoJSONs, 'new', annotools, null);
+		
+        //jQuery("svg").css("cursor", "default");
+        //jQuery("#drawDotButton").removeClass("active");
+		
     });
-	
-
-    // panel
-    var panel = jQuery('#panel').show();
-        panel.html(function () {
-            return "<div id='panelHeader'><h4> Dot Annotation Tool </h4></div><div id='panelBody'> <ul><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li><li>&nbsp;</li></ul><br /><button class='btn' id='cancelDots'>Cancel</button></div>";
-        });
-
-    jQuery('#cancelDots').click(function () {
-        jQuery('#panel').hide();
-        annotools.drawLayer.hide();
-	    annotools.svg.hide();
-        annotools.addMouseEvents();
-        jQuery("#drawDotButton").removeClass("active");
-    });
-	
 }
 
 // this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
@@ -187,7 +237,6 @@ annotools.prototype.relativeToGlobalCoord = function () {
 
 annotools.prototype.showDotTools = function() {
     
-    // redirect
     var annotools = this;
     var pointsArr = [];
     var geoJSONs  = [];
