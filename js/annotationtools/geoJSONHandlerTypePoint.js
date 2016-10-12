@@ -19,6 +19,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
     'properties': {
       'scalar_features': [],
       'annotations': [],
+	  'bbox': [],
       'radius': 4,
       'polygon_object_ids': []
     },
@@ -73,16 +74,22 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 	//var cy = y + r;
 	var cx = annotation.cx;
 	var cy = annotation.cy;
+	
+	var bbox = [];
 	var geoAnnot = this.generateGeoTemplateTypePoint();
 	coordinates.push([]);
 	// coordinates[0].push([])
 	coordinates[0].push([cx, cy]);
+	
+	bbox.push([]);
+	bbox[0].push([x, y, x+w, y+h]);
 	//geoAnnot.x = x;
 	//geoAnnot.y = y;
     geoAnnot.x = cx;
     geoAnnot.y = cy;
     
-    geoAnnot.properties.radius = radius;
+	geoAnnot.properties.bbox = bbox;
+	geoAnnot.properties.radius = radius;
     
 	geoAnnot.footprint = area;
 	geoAnnot.geometry.coordinates = coordinates;
