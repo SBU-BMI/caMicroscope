@@ -55,7 +55,7 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y))
 	var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x + annotation.w), this.imagingHelper.physicalToDataY(annotation.y + annotation.h))
 
-    /* Compute footprint(area)*/
+    /* Compute footprint(area) Math.PI=3.14159 */
 	var physicalW = this.imagingHelper.logicalToPhysicalX(annotation.w);
 	var helper = this.imagingHelper;
 	var dataW  = helper.physicalToDataX(physicalW);
@@ -68,9 +68,11 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 	var y = annotation.y;
 	var w = annotation.w;
 	var h = annotation.h;
-	var r = w / 2;
-	var cx = x + r;
-	var cy = y + r;
+	//var r = w / 2;
+	//var cx = x + r;
+	//var cy = y + r;
+	var cx = annotation.cx;
+	var cy = annotation.cy;
 	var geoAnnot = this.generateGeoTemplateTypePoint();
 	coordinates.push([]);
 	// coordinates[0].push([])
@@ -80,7 +82,7 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
     geoAnnot.x = cx;
     geoAnnot.y = cy;
     
-    geoAnnot.properties.radius = r;
+    geoAnnot.properties.radius = radius;
     
 	geoAnnot.footprint = area;
 	geoAnnot.geometry.coordinates = coordinates;
