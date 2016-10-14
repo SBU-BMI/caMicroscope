@@ -5,6 +5,9 @@ annotools.prototype.drawDots = function() {
     var pointsArr = [];
     var geoJSONs  = [];
     var radius    = 4;
+	var fillColor  = '#ffff00';
+    var hoverColor = '#ff2626';
+    var hoverRadius = 10;
 	
     var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
     // console.log(container);
@@ -89,9 +92,16 @@ annotools.prototype.drawDots = function() {
             .attr('cx', xCenterPt)
             .attr('cy', yCenterPt)
             .attr('r', radius)
-            .style('fill', '#ffff00')
+            .style('fill', fillColor)
 		    .style('cursor', 'pointer')
             .attr('id', 'circle_' + creation)
+		    .on("mouseover", function(d) {
+  	            d3.select(this).attr('r', hoverRadius).style('opacity', .5);
+	        })
+            .on("mouseout", function(d) {
+				d3.selectAll('circle').style('opacity', 1);
+  	            d3.select(this).attr('r', radius).style('fill', fillColor);
+	        })
             .on('contextmenu', function (d, i) {
                 d3.event.preventDefault();
                 // react on right-clicking;
