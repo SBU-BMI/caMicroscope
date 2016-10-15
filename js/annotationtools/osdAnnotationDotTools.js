@@ -5,8 +5,10 @@ annotools.prototype.drawDots = function() {
     var pointsArr = [];
     var geoJSONs  = [];
     var radius    = 4;
-	var fillColor  = '#ffff00';
+	var fillColor = '#ffff00';
+    var fillColorTwo = '#ff2626'; 
     var hoverColor = '#ff2626';
+    var backgroundColor = '#DAC99A';
     var hoverRadius = 10;
 	
     var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
@@ -73,7 +75,102 @@ annotools.prototype.drawDots = function() {
     // d3.js
     var svgHtmlDot = d3.select('svg');
     var viewPort =  d3.select('#viewport');
-   
+	
+	// add buttons to svg start
+    var w = 95;
+    var h = 35;
+    
+    var bWidth = 40; //button width
+    var bHeight = 25; //button height
+    var bSpace = 5; //space between buttons
+    var x0 = (width / 2) - (w / 2); //x offset
+    var y0 = 55; //y offset
+    var x1 = x0 + 45;
+	
+    //backdrop of colors
+    var background= svgHtmlDot.append("rect")
+        .attr('id', 'backgroundRect')
+        .attr('width', w)
+        .attr('height', h)
+        .attr('x', (width / 2) - (w / 2) - 5)
+        .attr('y', 50)
+        .attr('fill', backgroundColor).style('opacity', .6);
+    
+    var allButtons= svgHtmlDot.append('g').attr('id','allButtons');
+
+	d3.selectAll('rect').each(function(){
+        //when an item is clicked, svgClickEvents must not be fired   
+        d3.select('#backgroundRect').on('click', null);  //this should remove the event listener
+
+        d3.select(this).on('click', function() {
+            d3.event.stopPropagation(); 
+            console.log('click rect 1');
+        });
+    });
+	
+    //container for all buttons
+    var allButtons= svgHtmlDot.append('g').attr('id', 'allButtons');
+    
+    var buttonOne = allButtons.append('rect')
+        .attr('class', 'buttonRect')
+        .attr('width', bWidth)
+        .attr('height', bHeight)
+        .attr('x', x0)
+        .attr('y', y0)
+        .attr('rx', 5) //rx and ry give the buttons rounded corners
+        .attr('ry', 5)
+        .attr('fill', 'yellow')
+        .attr('id', 'buttonOne')
+        .attr('class','button')
+        .attr('title', 'Lymphocyte')
+        .style('cursor','pointer')
+        .on('contextmenu', function (d, i) {
+            d3.event.preventDefault();
+            // react on right-clicking;
+            fillColor = 'yellow';
+        });
+    
+     d3.selectAll('rect').each(function() {
+        
+        d3.select('#buttonOne').on('click', null);  //this should remove the event listener
+       
+        d3.select(this).on('click', function() {
+            d3.event.stopPropagation(); 
+            console.log('click rect 2');
+        });
+    });
+    
+            
+    var buttonTwo = allButtons.append('rect')
+        .attr('class', 'buttonRect')
+        .attr('width', bWidth)
+        .attr('height', bHeight)
+        .attr('x', x1)
+        .attr('y', y0)
+        .attr('rx', 5) //rx and ry give the buttons rounded corners
+        .attr('ry', 5)
+        .attr('fill', 'red')
+        .attr('id', 'buttonTwo')
+        .attr('class', 'button')
+        .attr('title', 'Non Lymphocyte')
+        .style('cursor','pointer')
+            .on('contextmenu', function (d, i) {
+            d3.event.preventDefault();
+            // react on right-clicking;
+            fillColor = 'red';
+        });
+    
+    d3.selectAll('rect').each(function() {
+        
+        d3.select('#buttonTwo').on('click', null);  //this should remove the event listener
+
+        d3.select(this).on('click', function() {
+            d3.event.stopPropagation(); 
+            console.log('click rect');
+        });
+    });
+    // end buttons
+	
     // group circle elements together
     var circleGroup = viewPort.append('g');
     
@@ -818,15 +915,15 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
         var count = 1;
-	for( var i = 0; i < newAnnots.length; i++ ) 
+	    for( var i = 0; i < newAnnots.length; i++ ) 
 	    { //for loop start
-	    var annotation = newAnnots[i];
+	        var annotation = newAnnots[i];
             annotation.properties.annotations = val
 
             // Post annotation
             // annotools.addnewAnnot(annotation)
-	    // POST start
-	    var self = this;
+	        // POST start
+	        var self = this;
             console.log('Save annotation function')
             console.log(annotation)
             jQuery.ajax({
@@ -836,17 +933,17 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
                 success: function (res, err) {
                     console.log("response: ")
                     console.log(res)
-		    if ( count === newAnnots.length ){
-                      if(res == "unauthorized"){
-                          alert("Error saving markup! Wrong secret");
-                      } else {   
-                          alert("Successfully saved markup!");
-                      }
-		  }
-                  console.log(err)
-                  //self.getMultiAnnot();
-                  console.log('succesfully posted ' + count + 'newAnnots length: ' + newAnnots.length);
-		  count ++;
+		            if ( count === newAnnots.length ){
+                        if(res == "unauthorized"){
+                            alert("Error saving markup! Wrong secret");
+                    } else {   
+                            alert("Successfully saved markup!");
+                    }
+		         }
+                 console.log(err)
+                 //self.getMultiAnnot();
+                 console.log('succesfully posted ' + count + 'newAnnots length: ' + newAnnots.length);
+		         count ++;
               }
           })
 		  
