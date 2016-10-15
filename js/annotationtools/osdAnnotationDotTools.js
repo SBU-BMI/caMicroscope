@@ -6,6 +6,7 @@ annotools.prototype.drawDots = function() {
     var geoJSONs  = [];
     var radius    = 4;
 	var fillColor = '#ffff00';
+    var fillColorOne = '#ffff00';
     var fillColorTwo = '#ff2626'; 
     var hoverColor = '#ff2626';
     var backgroundColor = '#DAC99A';
@@ -119,7 +120,7 @@ annotools.prototype.drawDots = function() {
         .attr('y', y0)
         .attr('rx', 5) //rx and ry give the buttons rounded corners
         .attr('ry', 5)
-        .attr('fill', 'yellow')
+        .attr('fill', fillColorOne)
         .attr('id', 'buttonOne')
         .attr('class','button')
         .attr('title', 'Lymphocyte')
@@ -127,7 +128,7 @@ annotools.prototype.drawDots = function() {
         .on('contextmenu', function (d, i) {
             d3.event.preventDefault();
             // react on right-clicking;
-            fillColor = 'yellow';
+            fillColor = fillColorOne;
         });
     
      d3.selectAll('rect').each(function() {
@@ -149,7 +150,7 @@ annotools.prototype.drawDots = function() {
         .attr('y', y0)
         .attr('rx', 5) //rx and ry give the buttons rounded corners
         .attr('ry', 5)
-        .attr('fill', 'red')
+        .attr('fill', fillColorTwo)
         .attr('id', 'buttonTwo')
         .attr('class', 'button')
         .attr('title', 'Non Lymphocyte')
@@ -157,7 +158,7 @@ annotools.prototype.drawDots = function() {
             .on('contextmenu', function (d, i) {
             d3.event.preventDefault();
             // react on right-clicking;
-            fillColor = 'red';
+            fillColor = fillColorTwo;
         });
     
     d3.selectAll('rect').each(function() {
@@ -166,7 +167,7 @@ annotools.prototype.drawDots = function() {
 
         d3.select(this).on('click', function() {
             d3.event.stopPropagation(); 
-            console.log('click rect');
+            console.log('click rect 3');
         });
     });
     // end buttons
