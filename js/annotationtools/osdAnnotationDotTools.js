@@ -6,9 +6,9 @@ annotools.prototype.drawDots = function() {
     var geoJSONs  = [];
     var radius    = 4;
 	var fillColor = '#ffff00';
-    var fillColorOne = '#ffff00';
-    var fillColorTwo = '#ff2626'; 
-    var hoverColor = '#ff2626';
+    var fillColorOne = '#ffff00';  // yellow (Lymphocyte)
+    var fillColorTwo = '#ff2626';  // red (Non Lymphocyte)
+    //var hoverColor = '#ff2626';
     var backgroundColor = '#DAC99A';
     var hoverRadius = 10;
 	
@@ -167,7 +167,7 @@ annotools.prototype.drawDots = function() {
 
         d3.select(this).on('click', function() {
             d3.event.stopPropagation(); 
-            console.log('click rect 3');
+            console.log('click rect');
         });
     });
     // end buttons
