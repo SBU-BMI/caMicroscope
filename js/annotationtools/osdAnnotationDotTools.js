@@ -286,10 +286,7 @@ annotools.prototype.drawDots = function() {
         //jQuery("#drawDotButton").removeClass("active");
 		
     });
-	
-	
-	
-	
+		
 }
 	
 // this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
@@ -323,12 +320,16 @@ annotools.prototype.convertFromNativeCoord = function (annot, end) {
     return globalNumber;
 }
 
+// test getMultiPointAnnot()
 annotools.prototype.showDotTools = function() {
-    
+
+    var annotools = this;
+	
+    annotools.getMultiPointAnnot();
+   
+    console.log('Test getMultiPointAnnot');
   
 }
-
-
 
 annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools, ctx) {
     jQuery('#panel').show('slide')
@@ -434,4 +435,43 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
 
     jQuery('#annotationsForm').jsonForm(formSchema)
   })
-}	 
+}
+
+// under development
+annotools.prototype.getMultiPointAnnot = function (viewer) {
+
+    var algorithms = ['humantest'];
+
+	//console.log(algorithms);
+    var self = this;
+	this.x1 = this.imagingHelper._viewportOrigin['x'];
+	this.y1 = this.imagingHelper._viewportOrigin['y'];
+	this.x2 = this.x1 + this.imagingHelper._viewportWidth;
+    this.y2 = this.y1 + this.imagingHelper._viewportHeight;
+
+	boundX1 = this.imagingHelper.physicalToLogicalX(200);
+    boundY1 = this.imagingHelper.physicalToLogicalY(20);
+    boundX2 = this.imagingHelper.physicalToLogicalX(20);
+    boundY2 = this.imagingHelper.physicalToLogicalY(20);
+	
+	var boundX = boundX1 - this.x1;
+	var boundY = boundX;
+
+    var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9));
+    var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
+    var area = (max.x - origin.x) * (max.y - origin.y);
+
+	if (algorithms.length) {
+    
+        this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
+            console.log(data);
+            self.annotations = data;
+			//self.displayGeoAnnots();
+			//self.setupHandlers();
+		})
+	} else {
+        self.setupHandlers();
+        //self.destroyMarkups()
+		// destroy canvas
+	}
+}
