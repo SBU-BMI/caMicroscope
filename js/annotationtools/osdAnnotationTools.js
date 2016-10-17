@@ -2260,7 +2260,6 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
       // Hide Panel
       jQuery('#panel').hide('slide')
       annotools.drawLayer.hide()
-      annotools.svg.hide()
       annotools.addMouseEvents()
 
       return false
@@ -2270,7 +2269,6 @@ annotools.prototype.promptForAnnotation = function (newAnnot, mode, annotools, c
       console.log('cancel handler')
       jQuery('#panel').hide('slide')
       annotools.drawLayer.hide()
-      annotools.svg.hide()
       annotools.addMouseEvents()
     }
 
