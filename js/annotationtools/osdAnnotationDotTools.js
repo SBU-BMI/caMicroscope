@@ -214,13 +214,14 @@ annotools.prototype.drawDots = function() {
                 return xCenterPt + ', ' + yCenterPt;	  
             });
 		
+		/*
 		geoJSONs.length = 0;  //empty the geoJSONs array
 		
 		d3.selectAll("circle").each( function(d, i){
 		
             xCenterPt = d3.select(this).attr("cx");
 		    yCenterPt = d3.select(this).attr("cy");
-		
+		*/
 	        // coord start
 	        var min_x, min_y, max_x, max_y, w, h;
 	        min_x = xCenterPt - radius;
@@ -278,7 +279,7 @@ annotools.prototype.drawDots = function() {
             //this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
 	        //annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
 		
-		 }); // end for each
+		// }); // end for each
 		
 	    annotools.promptForAnnotations(geoJSONs, 'new', annotools, null);
 		
