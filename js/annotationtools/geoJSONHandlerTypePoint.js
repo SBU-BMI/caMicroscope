@@ -90,3 +90,21 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
   return geoAnnot;
 }
 
+annotools.prototype.generatePointSVG = function (annotations) {
+	
+}
+
+annotools.prototype.displayGeoPointAnnots = function () {
+	
+	var geoJSONs = this.annotations;
+	
+    //if (this.annotVisible) {
+    
+    this.generatePointSVG(geoJSONs);
+    
+    var renderStartTime = 9;
+    var renderEndTime = 23;
+	
+  //}	
+}
+
