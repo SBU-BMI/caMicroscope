@@ -43,13 +43,6 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
   return geoJSONTemplateTypePoint;
 }
 
-/*
-annotools.prototype.test = function() {
-    alert('hello alina');
-}
-*/
-
-
 // under development
 annotools.prototype.convertCircleToGeo = function (annotation) {
  
@@ -60,7 +53,7 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 	var physicalW = this.imagingHelper.logicalToPhysicalX(annotation.w);
 	var helper = this.imagingHelper;
 	var dataW  = helper.physicalToDataX(physicalW);
-	var radius = dataW / 2;
+	//var radius = dataW / 2;
 	
 	var area = radius * radius * Math.PI;
     

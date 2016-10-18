@@ -1,10 +1,10 @@
 // Dot Annotation Tool (under development)
 annotools.prototype.drawDots = function() {
 	
-    var annotools = this;
+    var self = this;
     var pointsArr = [];
     var geoJSONs  = [];
-    var radius    = 4;
+          radius  = 4;
 	var fillColor = '#ffff00';
     var fillColorOne = '#ffff00';  // yellow (Lymphocyte)
     var fillColorTwo = '#ff2626';  // red (Non Lymphocyte)
@@ -253,7 +253,7 @@ annotools.prototype.drawDots = function() {
 	        console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
 	        //console.log(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
 		
-            var globalNumbers = JSON.parse(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+            var globalNumbers = JSON.parse(self.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
             newAnnot.x = globalNumbers.nativeX;
             newAnnot.y = globalNumbers.nativeY;
             newAnnot.w = globalNumbers.nativeW;
@@ -269,7 +269,7 @@ annotools.prototype.drawDots = function() {
 	        // line - 1231
 	        // convertFromNative = function (annot, end)
 	        // convert to geojson 
-            var geoNewAnnot = annotools.convertCircleToGeo(newAnnot);
+            var geoNewAnnot = self.convertCircleToGeo(newAnnot);
             //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
 		
 	        geoJSONs.push(geoNewAnnot);
@@ -281,7 +281,7 @@ annotools.prototype.drawDots = function() {
 		
 		// }); // end for each
 		
-	    annotools.promptForAnnotations(geoJSONs, 'new', annotools, null);
+	    self.promptForAnnotations(geoJSONs, 'new', self, null);
 		
         //jQuery("svg").css("cursor", "default");
         //jQuery("#drawDotButton").removeClass("active");
@@ -324,9 +324,9 @@ annotools.prototype.convertFromNativeCoord = function (annot, end) {
 // test getMultiPointAnnot()
 annotools.prototype.showDotTools = function() {
 
-    var annotools = this;
+    var self = this;
 	
-    annotools.getMultiPointAnnot();
+    self.getMultiPointAnnot();
    
     console.log('Test getMultiPointAnnot');
   
