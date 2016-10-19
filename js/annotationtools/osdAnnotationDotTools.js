@@ -401,11 +401,13 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
                     }
 		         }
                  console.log(err)
-                 //self.getMultiAnnot();
+                 //annotools.getMultiPointAnnot();
                  console.log('succesfully posted ' + count + 'newAnnots length: ' + newAnnots.length);
 		         count ++;
               }
           })
+			
+		 annotools.getMultiPointAnnot();
 		  
 	  // POST end
 		  
