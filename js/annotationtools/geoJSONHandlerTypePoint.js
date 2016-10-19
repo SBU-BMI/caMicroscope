@@ -55,8 +55,9 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 	var dataW  = helper.physicalToDataX(physicalW);
 	//var radius = dataW / 2;
 	
-	var area = radius * radius * Math.PI;
-    
+	//var area = radius * radius * Math.PI;
+	
+   
 	var coordinates = [];
 	var x = annotation.x;
 	var y = annotation.y;
@@ -84,7 +85,7 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 	geoAnnot.properties.bbox = bbox;
 	geoAnnot.properties.radius = radius;
     
-	geoAnnot.footprint = area;
+	//geoAnnot.footprint = area;
 	geoAnnot.geometry.coordinates = coordinates;
 
   return geoAnnot;
