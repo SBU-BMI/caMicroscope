@@ -470,6 +470,7 @@ annotools.prototype.getMultiPointAnnot = function (viewer) {
             console.log(data);
             self.annotations = data;
 			//self.displayGeoAnnots();
+			self.displayGeoPointAnnots();
 			//self.setupHandlers();
 		})
 	} else {
