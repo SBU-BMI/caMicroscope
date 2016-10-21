@@ -20,8 +20,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
       'scalar_features': [],
       'annotations': [],
 	  'bbox': [],
-      'radius': 3,
-	  'fill_color': '#ffff00',
+      'radius': 4,
       'polygon_object_ids': []
     },
     'footprint': 10000,
@@ -84,7 +83,7 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
     geoAnnot.y = cy;
     
 	geoAnnot.properties.bbox = bbox;
-	//geoAnnot.properties.radius = radius;
+	geoAnnot.properties.radius = radius;
     
 	//geoAnnot.footprint = area;
 	geoAnnot.geometry.coordinates = coordinates;
@@ -172,9 +171,6 @@ annotools.prototype.generatePointSVG = function (annotations) {
             console.log(annotation)
             var nativepoints = annotation.geometry.coordinates[0];
 			
-			var radius = 3;
-			var fillColor = '#ffff00';
-			
             // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
             var algorithm_id = annotation.provenance.analysis.execution_id;
             var color = algorithm_color[algorithm_id];
@@ -185,10 +181,7 @@ annotools.prototype.generatePointSVG = function (annotations) {
 				var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
 				
 				svgHtml += '<circle  class="annotationsvg" id="' + id + '" '
-				
-				//svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="3" fill="yellow" />'
-				
-				svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + radius + '" fill="' + fillColor + '" />'
+				svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="4" fill="yellow" />'
              }
          }
      }
