@@ -4,7 +4,7 @@ annotools.prototype.drawDots = function() {
     var self = this;
     var pointsArr = [];
     var geoJSONs  = [];
-          radius  = 4;
+    var radius  = 3;
 	var fillColor = '#ffff00';
     var fillColorOne = '#ffff00';  // yellow (Lymphocyte)
     var fillColorTwo = '#ff2626';  // red (Non Lymphocyte)
@@ -12,9 +12,14 @@ annotools.prototype.drawDots = function() {
     var backgroundColor = '#DAC99A';
     var hoverRadius = 10;
 	
+
     var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
     // console.log(container);
-	
+    
+    var width = parseInt(container.offsetWidth)
+    var height = parseInt(container.offsetHeight)
+    
+
     var left = parseInt(container.offsetLeft),
         top = parseInt(container.offsetTop),
         width = parseInt(container.offsetWidth),
@@ -31,8 +36,8 @@ annotools.prototype.drawDots = function() {
 	
     this.drawLayer.hide();
     this.magnifyGlass.hide();  // hide the Magnifying Tool
-        
-        
+  
+    
     var markup_svg = document.getElementById('markups');
     if (markup_svg) {
         // console.log("destroying")
@@ -43,7 +48,7 @@ annotools.prototype.drawDots = function() {
         this.svg.html = '';
         this.svg.destroy();
     }
-	
+
     /* svgHtml */
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 2px solid #ffff00">';
         svgHtml += '<g id="groupcenter"/>';
@@ -64,6 +69,7 @@ annotools.prototype.drawDots = function() {
         },
         html: svgHtml
     }).inject(container);
+    
 	
     // prevent zoom when the SVG overlay is clicked
     jQuery('#markups').mousedown(function (event) {
@@ -235,9 +241,12 @@ annotools.prototype.drawDots = function() {
 	        console.log('w and h: ' + w + ', ' + h);
 		    console.log('xCenterPt and yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
 		
-            var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-            var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-		    var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, yCenterPt).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+            //var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+            //var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		    //var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, //yCenterPt).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		    var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y);
+            var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y);
+		    var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, yCenterPt);
             var newAnnot = {
                 x: startRelativeMousePosition.x,
                 y: startRelativeMousePosition.y,
@@ -401,7 +410,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
                     }
 		         }
                  console.log(err)
-                 //annotools.getMultiPointAnnot();
+                 annotools.getMultiPointAnnot();
                  console.log('succesfully posted ' + count + 'newAnnots length: ' + newAnnots.length);
 		         count ++;
               }
@@ -471,11 +480,10 @@ annotools.prototype.getMultiPointAnnot = function (viewer) {
             self.annotations = data;
 			//self.displayGeoAnnots();
 			self.displayGeoPointAnnots();
-			//self.setupHandlers();
+			self.setupHandlers();
 		})
 	} else {
         self.setupHandlers();
-        //self.destroyMarkups()
-		// destroy canvas
+        self.destroyMarkups()
 	}
 }
