@@ -27,7 +27,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
     'footprint': 10000,
     'provenance': {
       'analysis': {
-        'execution_id': 'humantest',
+        'execution_id': 'dotnuclei',
         'study_id': "",
         'source': "human",
         'computation': 'detection'
