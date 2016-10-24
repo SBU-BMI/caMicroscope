@@ -306,11 +306,6 @@ annotools.prototype.generateSVG = function (annotations) {
             var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
 				
             svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
-            //svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="3" fill="yellow" />'
-            // onmouseover = "evt.target.setAttribute('r', '10');"
-            // onmouseout = "evt.target.setAttribute('r',  '3');"
-            // onmouseover = "evt.target.setAttribute('r', hoverRadius);evt.target.setAttribute('fill', hoverColor);"
-            // onmouseout = "evt.target.setAttribute('r',  radius);evt.target.setAttribute('fill', fillColor);"
             svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
             svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
             svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
