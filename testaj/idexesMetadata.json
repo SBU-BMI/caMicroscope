@@ -1,0 +1,11 @@
+ db.metadata.getIndexes()
+[
+        {
+                "v" : 1,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_",
+                "ns" : "u24_luad.metadata"
+        }
+]

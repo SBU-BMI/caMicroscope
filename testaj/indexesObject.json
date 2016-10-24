@@ -1,0 +1,79 @@
+db.objects.getIndexes()
+[
+        {
+                "v" : 1,
+                "key" : {
+                        "_id" : 1
+                },
+                "name" : "_id_",
+                "ns" : "u24_luad.objects"
+        },
+        {
+                "v" : 1,
+                "key" : {
+                        "provenance.image.case_id" : 1,
+                        "provenance.analysis.execution_id" : 1,
+                        "footprint" : 1,
+                        "x" : 1,
+                        "y" : 1
+                },
+                "name" : "exe_case_fp_xy",
+                "ns" : "u24_luad.objects"
+        },
+        {
+                "v" : 1,
+                "key" : {
+                        "provenance.image.case_id" : 1,
+                        "provenance.analysis.execution_id" : 1,
+                        "randval" : 1
+                },
+                "name" : "case_exe_randval",
+                "ns" : "u24_luad.objects"
+        },
+        {
+                "v" : 1,
+                "key" : {
+                        "provenance.image.subject_id" : 1,
+                        "provenance.analysis.execution_id" : 1,
+                        "randval" : 1
+                },
+                "name" : "sub_exe_randval",
+                "ns" : "u24_luad.objects"
+        },
+        {
+                "v" : 1,
+                "key" : {
+                        "provenance.analysis.execution_id" : 1,
+                        "randval" : 1
+                },
+                "name" : "exe_randval",
+                "ns" : "u24_luad.objects"
+        },
+        {
+                "v" : 1,
+                "key" : {
+                        "randval" : 1
+                },
+                "name" : "randval_1",
+                "ns" : "u24_luad.objects"
+        },
+        {
+                "v" : 1,
+                "key" : {
+                        "provenance.batch_id" : 1
+                },
+                "name" : "batch_idx",
+                "ns" : "u24_luad.objects"
+        },
+        {
+                "v" : 1,
+                "key" : {
+                        "provenance.image.subject_id" : 1,
+                        "provenance.image.case_id" : 1,
+                        "provenance.analysis.execution_id" : 1
+                },
+                "name" : "sub_case_exe",
+                "ns" : "u24_luad.objects",
+                "background" : true
+        }
+]
