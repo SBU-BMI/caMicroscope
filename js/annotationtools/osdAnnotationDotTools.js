@@ -13,14 +13,20 @@ annotools.prototype.drawDots = function() {
     var hoverRadius = 10;
 	
 
-    var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
-    // console.log(container);
+    var markup_svg = document.getElementById('markups');
     
-    var width = parseInt(container.offsetWidth)
-    var height = parseInt(container.offsetHeight)
+    if (!markup_svg)
+    {
     
-
-    var left = parseInt(container.offsetLeft),
+        console.log('not markup_svg');
+        var container = document.getElementsByClassName(this.canvas)[0]; // get the Canvas Container
+        // console.log(container);
+    
+        var width = parseInt(container.offsetWidth)
+        var height = parseInt(container.offsetHeight)
+    
+        /*
+        var left = parseInt(container.offsetLeft),
         top = parseInt(container.offsetTop),
         width = parseInt(container.offsetWidth),
         height = parseInt(container.offsetHeight);
@@ -33,21 +39,21 @@ annotools.prototype.drawDots = function() {
         top = 0;
         height = window.innerHeight;
     }
-	
-    this.drawLayer.hide();
-    this.magnifyGlass.hide();  // hide the Magnifying Tool
-  
-    
-    var markup_svg = document.getElementById('markups');
-    if (markup_svg) {
+    */
+        this.drawLayer.hide();
+        this.magnifyGlass.hide();  // hide the Magnifying Tool
+        
+        //var markup_svg = document.getElementById('markups');
+        if (markup_svg) {
         // console.log("destroying")
-        markup_svg.destroy();
-    }
-	
-    if (this.svg) {
-        this.svg.html = '';
-        this.svg.destroy();
-    }
+            markup_svg.destroy();
+        }
+
+       if (this.svg) {
+            this.svg.html = '';
+            this.svg.destroy();
+       }
+    
 
     /* svgHtml */
     var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 2px solid #ffff00">';
@@ -57,7 +63,7 @@ annotools.prototype.drawDots = function() {
         svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4 + '" style="display: none"/>';
         svgHtml += '</g>';
         svgHtml += '<g id="viewport" transform="translate(0,0)">';
-        svgHtml += '</g>';
+        //svgHtml += '</g>';
 
     this.svg = new Element('div', {
         styles: {
@@ -70,6 +76,7 @@ annotools.prototype.drawDots = function() {
         html: svgHtml
     }).inject(container);
     
+    }
 	
     // prevent zoom when the SVG overlay is clicked
     jQuery('#markups').mousedown(function (event) {
@@ -410,13 +417,15 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
                     }
 		         }
                  console.log(err)
-                 annotools.getMultiPointAnnot();
+                 //annotools.getMultiPointAnnot();
+                 annotools.getMultiAnnot();
                  console.log('succesfully posted ' + count + 'newAnnots length: ' + newAnnots.length);
 		         count ++;
               }
           })
 			
-		 annotools.getMultiPointAnnot();
+		 //annotools.getMultiPointAnnot();
+         annotools.getMultiAnnot();
 		  
 	  // POST end
 		  
@@ -452,36 +461,49 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
 // under development
 annotools.prototype.getMultiPointAnnot = function (viewer) {
 
-    var algorithms = ['humantest'];
+    //var algorithms = ['luad:bg:20160520', 'humantest'];
+    var algorithms = ['dotnuclei'];
 
-	//console.log(algorithms);
+    /*
+    if (jQuery('#tree').attr('algotree')) {
+        var selalgos = jQuery('#tree').fancytree('getTree').getSelectedNodes();
+        console.log(selalgos);
+         
+        for (i = 0; i < selalgos.length; i++) {
+            console.log(selalgos[i]);
+            algorithms.push(selalgos[i].refKey);
+        }
+     }
+    */
+    
+    console.log('getMultiPointAnnot: ' + algorithms);
     var self = this;
-	this.x1 = this.imagingHelper._viewportOrigin['x'];
-	this.y1 = this.imagingHelper._viewportOrigin['y'];
-	this.x2 = this.x1 + this.imagingHelper._viewportWidth;
+    this.x1 = this.imagingHelper._viewportOrigin['x'];
+    this.y1 = this.imagingHelper._viewportOrigin['y'];
+    this.x2 = this.x1 + this.imagingHelper._viewportWidth;
     this.y2 = this.y1 + this.imagingHelper._viewportHeight;
 
-	boundX1 = this.imagingHelper.physicalToLogicalX(200);
+    boundX1 = this.imagingHelper.physicalToLogicalX(200);
     boundY1 = this.imagingHelper.physicalToLogicalY(20);
     boundX2 = this.imagingHelper.physicalToLogicalX(20);
     boundY2 = this.imagingHelper.physicalToLogicalY(20);
 	
-	var boundX = boundX1 - this.x1;
-	var boundY = boundX;
+    var boundX = boundX1 - this.x1;
+    var boundY = boundX;
 
     var max = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(9), this.imagingHelper.physicalToDataY(9));
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(0), this.imagingHelper.physicalToDataY(0));
     var area = (max.x - origin.x) * (max.y - origin.y);
 
-	if (algorithms.length) {
+    if (algorithms.length) {
     
         this.annotations = this.AnnotationStore.fetchAnnotations(this.x1, this.y1, this.x2, this.y2, area, algorithms, function (data) {
             console.log(data);
             self.annotations = data;
-			//self.displayGeoAnnots();
-			self.displayGeoPointAnnots();
-			self.setupHandlers();
-		})
+            //self.displayGeoAnnots();
+            self.displayGeoPointAnnots();
+            self.setupHandlers();
+            })
 	} else {
         self.setupHandlers();
         self.destroyMarkups()
