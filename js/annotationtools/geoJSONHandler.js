@@ -294,19 +294,29 @@ annotools.prototype.generateSVG = function (annotations) {
       
       // circle start
       if (annotation.geometry.type === 'Point') {
-
-         var radius = 3;
+         var currentRadius = 3;
+         var hoverRadius = currentRadius * 3;
+         //var fillColor = '#ff2626';
          var fillColor = '#ffff00';
+         var hoverColor = '#ffff00';
 			
-         // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
          for (var k = 0; k < nativepoints.length; k++) {
 
             var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
             var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
 				
-            svgHtml += '<circle  class="annotationsvg" id="' + id + '" '
+            svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
             //svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="3" fill="yellow" />'
-            svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + radius + '" fill="' + fillColor + '" />'
+            // onmouseover = "evt.target.setAttribute('r', '10');"
+            // onmouseout = "evt.target.setAttribute('r',  '3');"
+            // onmouseover = "evt.target.setAttribute('r', hoverRadius);evt.target.setAttribute('fill', hoverColor);"
+            // onmouseout = "evt.target.setAttribute('r',  radius);evt.target.setAttribute('fill', fillColor);"
+            svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
+            svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
+            svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
+            svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
+            svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
+            svgHtml += '/>';
          }
       }
       // circle end
