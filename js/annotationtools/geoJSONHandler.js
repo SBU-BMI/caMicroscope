@@ -293,23 +293,22 @@ annotools.prototype.generateSVG = function (annotations) {
       var color = algorithm_color[algorithm_id]
       
       // circle start
-      // circles
-        if (annotation.geometry.type === 'Point') {
+      if (annotation.geometry.type === 'Point') {
 
-			var radius = 3;
-			var fillColor = '#ffff00';
+         var radius = 3;
+         var fillColor = '#ffff00';
 			
-            // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
-            for (var k = 0; k < nativepoints.length; k++) {
+         // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
+         for (var k = 0; k < nativepoints.length; k++) {
 
-				var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
-				var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+            var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
+            var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
 				
-				svgHtml += '<circle  class="annotationsvg" id="' + id + '" '
-				//svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="3" fill="yellow" />'
-				svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + radius + '" fill="' + fillColor + '" />'
-             }
+            svgHtml += '<circle  class="annotationsvg" id="' + id + '" '
+            //svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="3" fill="yellow" />'
+            svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + radius + '" fill="' + fillColor + '" />'
          }
+      }
       // circle end
 
       // var svg = 
