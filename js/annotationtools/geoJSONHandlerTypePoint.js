@@ -97,18 +97,18 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 annotools.prototype.generatePointSVG = function (annotations) {
 	
     // console.log(annotation)
-    // var annotation = annotations[ii]
-    var self =this;
-    var annotations = this.annotations
-    if (annotations) {
-        var markup_svg = document.getElementById('markups')
-        if (markup_svg) {
-        // console.log("destroying")
-            markup_svg.destroy()
-        }
+  // var annotation = annotations[ii]
+  var self =this;
+  var annotations = this.annotations
+  if (annotations) {
+    var markup_svg = document.getElementById('markups')
+    if (markup_svg) {
+      // console.log("destroying")
+      markup_svg.destroy()
+    }
 
     // console.log(annotations.length)
-	var container = document.getElementsByClassName(this.canvas)[0] // Get The Canvas Container
+    var container = document.getElementsByClassName(this.canvas)[0] // Get The Canvas Container
     // console.log(nativepoints)
     // var container = document.getElementsByClassName(this.cavas)[0]
     // console.log(container)
@@ -123,7 +123,6 @@ annotools.prototype.generatePointSVG = function (annotations) {
     svgHtml += '</g>'
     svgHtml += '<g id="viewport" transform="translate(0,0)">'
 
-	// polygon
     for (var i = 0; i < annotations.length; i++) {
       var annotation = annotations[i]
 
@@ -137,6 +136,30 @@ annotools.prototype.generatePointSVG = function (annotations) {
       // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       var algorithm_id = annotation.provenance.analysis.execution_id
       var color = algorithm_color[algorithm_id]
+      
+      // circle start
+      if (annotation.geometry.type === 'Point') {
+         var currentRadius = 3;
+         var hoverRadius = currentRadius * 3;
+         //var fillColor = '#ff2626';
+         var fillColor = '#ffff00';
+         var hoverColor = '#ffff00';
+			
+         for (var k = 0; k < nativepoints.length; k++) {
+
+            var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
+            var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+				
+            svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
+            svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
+            svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
+            svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
+            svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
+            svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
+            svgHtml += '/>';
+         }
+      }
+      // circle end
 
       // var svg = 
       svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
@@ -157,43 +180,6 @@ annotools.prototype.generatePointSVG = function (annotations) {
         color = 'lime'
       svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
     }
-	  
-	
-	for (var i = 0; i < annotations.length; i++) {
-     
-        var annotation = annotations[i];
-        
-		// circles
-        if (annotation.geometry.type === 'Point') {
-
-            var id = '';
-      
-            if (annotation['_id']) {
-				id = annotation['_id']['$oid'];
-			}
-            console.log(annotation)
-            var nativepoints = annotation.geometry.coordinates[0];
-			var radius = 3;
-			var fillColor = '#ffff00';
-			
-            // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
-            var algorithm_id = annotation.provenance.analysis.execution_id;
-            var color = algorithm_color[algorithm_id];
-
-            for (var k = 0; k < nativepoints.length; k++) {
-
-				var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
-				var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
-				
-				svgHtml += '<circle  class="annotationsvg" id="' + id + '" '
-				//svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="3" fill="yellow" />'
-				svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + radius + '" fill="' + fillColor + '" />'
-             }
-         }
-     }
-	// end
-	  
-	  
     this.svg = new Element('div', {
       styles: {
         position: 'absolute',
@@ -209,26 +195,27 @@ annotools.prototype.generatePointSVG = function (annotations) {
 
 
   var ctrl = false;
-  jQuery(document).keydown(function(event) {
-      //console.log("control");
-	  //console.log(event);
-      if(event.which == 17 || event.which == 91)
+  jQuery(document).keydown(function(event){
+    //console.log("control");
+    //console.log(event);
+    if(event.which == 17 || event.which == 91)
       ctrl = true;
+
   });
-  jQuery(document).keyup(function() {
-      ctrl = false;
+  jQuery(document).keyup(function(){
+        ctrl = false;
   });
   jQuery('.annotationsvg').mousedown(function (event) {
-      //console.log(event.which);
-      if(ctrl){
+        //console.log(event.which);
+        if(ctrl){
           //console.log("double clicked");
           event.preventDefault();
           event.stopPropagation();
           event.stopImmediatePropagation();
           //return false;
-       } else {
+        } else {
           return;
-       }
+        }
         var panel = jQuery('#panel').show('slide')
         panel.html('');
         jQuery(".annotationsvg").css("opacity", 0.5);
@@ -306,8 +293,7 @@ annotools.prototype.generatePointSVG = function (annotations) {
                   success: function(data){
                     console.log(data);
                     jQuery("#panel").hide("slide");
-                    //self.getMultiAnnot();
-					self.getMultiPointAnnot();
+                    self.getMultiPointAnnot();
                   }
                 });
               });
@@ -320,59 +306,6 @@ annotools.prototype.generatePointSVG = function (annotations) {
     
   })
 
-
-
-  /*
-  jQuery('.annotationsvg').mousedown(function (event) {
-   
-    switch (event.which) {
-      case 3:
-
-
-        var panel = jQuery('#panel').show('slide')
-        panel.html('');
-
-        var id = event.target.id
-        var url = "api/Data/getProperties.php?id="+id;
-        var content = "<div id = 'panelHeader'> <h4>Annotation Details </h4></div>"
-    + "<div id='panelBody'>";
-
-        jQuery.get(url, function(data){
-          
-          var data = JSON.parse(data)[0];
-          var properties = data.properties.annotations;
-          for(var i in properties){
-            
-            if(i == "secret"){
-
-            } else {
-              var line = "<div class='markupProperty'><strong>"+i+"</strong>: " + properties[i]+"</div>";
-              content+=line;
-            }
-          
-          }
-          content += "<button class='btn' id='cancelPanel'>Cancel</button>";
-          content +="</div>";
-          var cancel = function () {
-           
-            jQuery('#panel').hide('slide')
-
-          }
-
-          panel.html(content);
-
-
-          jQuery("#cancelPanel").click(function(){cancel();});
-
-
-
-        });
-        // jQuery("#panel").hide("slide")
-        break
-    }
-  })
-  */
-	
 }
 
 annotools.prototype.displayGeoPointAnnots = function () {
