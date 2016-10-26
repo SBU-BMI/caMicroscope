@@ -4,15 +4,16 @@ annotools.prototype.drawDots = function() {
     var self = this;
     var pointsArr = [];
     var geoJSONs  = [];
+    var circleRemoveIds = [];
     var radius  = 3;
-	var fillColor = '#ff2626';
+    var fillColor = '#ff2626';
     var fillColorOne = '#ffff00';  // yellow
     var fillColorTwo = '#ff2626';  // red
     //var hoverColor = '#ff2626';
     var backgroundColor = '#DAC99A';
     var hoverRadius = 10;
 	
-
+	
     var markup_svg = document.getElementById('markups');
     
     if (!markup_svg)
@@ -30,16 +31,16 @@ annotools.prototype.drawDots = function() {
         top = parseInt(container.offsetTop),
         width = parseInt(container.offsetWidth),
         height = parseInt(container.offsetHeight);
-    console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
-    if ( left < 0 ) {
-        left = 0;
-        width = window.innerWidth;
-    } // see if the container is outside the current viewport
-    if ( top < 0 ) {
-        top = 0;
-        height = window.innerHeight;
-    }
-    */
+        console.log("left: " + left + " top: " + top + " width: " + width + " height: " + height);
+        if ( left < 0 ) {
+            left = 0;
+            width = window.innerWidth;
+        } // see if the container is outside the current viewport
+        if ( top < 0 ) {
+            top = 0;
+            height = window.innerHeight;
+        }
+        */
         this.drawLayer.hide();
         this.magnifyGlass.hide();  // hide the Magnifying Tool
         
@@ -49,32 +50,32 @@ annotools.prototype.drawDots = function() {
             markup_svg.destroy();
         }
 
-       if (this.svg) {
+        if (this.svg) {
             this.svg.html = '';
             this.svg.destroy();
-       }
+        }
     
 
-    /* svgHtml */
-    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 2px solid #ffff00">';
+        /* svgHtml */
+        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 2px solid #ffff00">';
         svgHtml += '<g id="groupcenter"/>';
         svgHtml += '<g id="origin">';
-    var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5));
+        var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5));
         svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4 + '" style="display: none"/>';
         svgHtml += '</g>';
         svgHtml += '<g id="viewport" transform="translate(0,0)">';
         //svgHtml += '</g>';
 
-    this.svg = new Element('div', {
-        styles: {
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100%'
-        },
-        html: svgHtml
-    }).inject(container);
+        this.svg = new Element('div', {
+            styles: {
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '100%',
+                height: '100%'
+            },
+            html: svgHtml
+        }).inject(container);
     
     }
 	
@@ -199,7 +200,7 @@ annotools.prototype.drawDots = function() {
 		var xCenterPt = pointCoords[0];
         var yCenterPt = pointCoords[1];
 		
-        //console.log(xCenterPt + ' ' + yCenterPt);
+        console.log('xCenterPt, yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
         
         var svgCircle = circleGroup.append('circle')
             .attr('cx', xCenterPt)
@@ -208,6 +209,7 @@ annotools.prototype.drawDots = function() {
             .style('fill', fillColor)
 		    .style('cursor', 'pointer')
             .attr('id', 'circle_' + creation)
+            .attr('class', 'dot')
 		    .on("mouseover", function(d) {
   	            d3.select(this).attr('r', hoverRadius).style('opacity', .5);
 	        })
@@ -219,90 +221,142 @@ annotools.prototype.drawDots = function() {
                 d3.event.preventDefault();
                 // react on right-clicking;
                 // removeCircle('circle_' + creation);
+                var tmpId = 'circle_' + creation;
+                console.log('g #' + 'circle_' + creation);
+                circleRemoveIds.push(tmpId);
+                console.log('circleRemoveIds in: ' + circleRemoveIds);
                 d3.selectAll('g #' + 'circle_' + creation).remove();
+                for (var k = 0; k < geoJSONs.length; k++) {
+                console.log('properties.circle_id: ' + geoJSONs[k].properties.circle_id);
+                    if (geoJSONs[k].properties.circle_id == tmpId) {
+                        //alert('Ready to remove');
+                        geoJSONs.splice(i,1);
+                        break;
+                    }
+			    }
+                //d3.selectAll('g #' + 'circle_' + creation).remove();
             });
         
-        var svgTooltip = svgCircle.append('title')    // tooltip - circle x, y
-            .text(function() {
-                return xCenterPt + ', ' + yCenterPt;	  
+            console.log('circleRemoveIds after: ' + circleRemoveIds);
+            var svgTooltip = svgCircle.append('title')    // tooltip - circle x, y
+                .text(function() {
+                    return Math.round(xCenterPt) + ', ' + Math.round(yCenterPt);	  
             });
 		
-		/*
-		geoJSONs.length = 0;  //empty the geoJSONs array
 		
-		d3.selectAll("circle").each( function(d, i){
+            //geoJSONs.length = 0;  //empty the geoJSONs array
 		
-            xCenterPt = d3.select(this).attr("cx");
-		    yCenterPt = d3.select(this).attr("cy");
-		*/
-	        // coord start
-	        var min_x, min_y, max_x, max_y, w, h;
-	        min_x = xCenterPt - radius;
-            min_y = yCenterPt - radius;
-            max_x = xCenterPt + radius;
-            max_y = yCenterPt + radius;
-            w = Math.abs(max_x - min_x);
-            h = Math.abs(max_y - min_y);
-	        console.log('min: ' + min_x + ', ' + min_y);
-	        console.log('max: ' + max_x + ', ' + max_y);
-	        console.log('w and h: ' + w + ', ' + h);
-		    console.log('xCenterPt and yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
+            d3.selectAll('.dot').each( function(d, i) {
+			
+                var geoNewAnnot = {};
 		
-            //var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-            //var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-		    //var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, //yCenterPt).minus(OpenSeadragon.getElementOffset(viewer.canvas));
-		    var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y);
-            var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y);
-		    var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, yCenterPt);
-            var newAnnot = {
-                x: startRelativeMousePosition.x,
-                y: startRelativeMousePosition.y,
-                w: w,
-	            h: h,
-			    cx: centerPtRelativeMousePosition.x,
-			    cy: centerPtRelativeMousePosition.y,
-	            type: 'circle',
-	            color: this.color,
-                loc: []
-	        }
+                var xCenterPtTmp = d3.select(this).attr('cx');
+                var yCenterPtTmp = d3.select(this).attr('cy');
+                var circleId = d3.select(this).attr('id');
+			
+                //console.log('isPointExists: ' + isPointExists);
+                console.log('circleId: ' + circleId);
+                console.log('xCenterPtTmp: ' + xCenterPtTmp);
+                console.log('yCenterPtTmp: ' + yCenterPtTmp);
+                console.log('xCenterPt: ' + xCenterPt);
+                console.log('yCenterPt: ' + yCenterPt);
+                console.log('geoJSONs.length before: ' + geoJSONs.length);
+			
+                if ( xCenterPtTmp == xCenterPt && yCenterPtTmp == yCenterPt ) {
+				
+                    //alert('true');
+				
+                    // coord start
+                    var min_x, min_y, max_x, max_y, w, h;
+                    min_x = xCenterPt - radius;
+                    min_y = yCenterPt - radius;
+                    //max_x = min_x + (2 * radius);
+                    //max_y = min_y + (2 * radius);
+                    max_x = xCenterPt + radius;
+                    max_y = yCenterPt + radius;
+                    w = Math.abs(max_x - min_x);
+                    h = Math.abs(max_y - min_y);
+                    console.log('min: ' + min_x + ', ' + min_y);
+                    console.log('max: ' + max_x + ', ' + max_y);
+                    console.log('w and h: ' + w + ', ' + h);
+                    console.log('xCenterPt and yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
 		
-	        console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
-	        //console.log(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+                    //var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+                    //var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		            //var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, //yCenterPt).minus(OpenSeadragon.getElementOffset(viewer.canvas));
+		            var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y);
+                    var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y);
+		            var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, yCenterPt);
+                    var newAnnot = {
+                         x: startRelativeMousePosition.x,
+                         y: startRelativeMousePosition.y,
+                         w: w,
+	                 h: h,
+			         cx: centerPtRelativeMousePosition.x,
+			         cy: centerPtRelativeMousePosition.y,
+	                 type: 'circle',
+                         circleId: circleId,
+                         color: this.color,
+                         loc: []
+	             }
 		
-            var globalNumbers = JSON.parse(self.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
-            newAnnot.x = globalNumbers.nativeX;
-            newAnnot.y = globalNumbers.nativeY;
-            newAnnot.w = globalNumbers.nativeW;
-            newAnnot.h = globalNumbers.nativeH;
-		    newAnnot.cx = globalNumbers.nativeCx;
-		    newAnnot.cy = globalNumbers.nativeCy;
-            var loc = [];
-            loc[0] = parseFloat(newAnnot.cx);
-            loc[1] = parseFloat(newAnnot.cy);
-            newAnnot.loc = loc;
-	        console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
+	            console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
+	            //console.log(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
 		
-	        // line - 1231
-	        // convertFromNative = function (annot, end)
-	        // convert to geojson 
-            var geoNewAnnot = self.convertCircleToGeo(newAnnot);
-            //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+                var globalNumbers = JSON.parse(self.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+                newAnnot.x = globalNumbers.nativeX;
+                newAnnot.y = globalNumbers.nativeY;
+                newAnnot.w = globalNumbers.nativeW;
+                newAnnot.h = globalNumbers.nativeH;
+		        newAnnot.cx = globalNumbers.nativeCx;
+		        newAnnot.cy = globalNumbers.nativeCy;
+                var loc = [];
+                loc[0] = parseFloat(newAnnot.cx);
+                loc[1] = parseFloat(newAnnot.cy);
+                newAnnot.loc = loc;
+	            console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
 		
-	        geoJSONs.push(geoNewAnnot);
-	        //console.log("geoJSONs length: " + geoJSONs.length);
+	            // line - 1231
+	            // convertFromNative = function (annot, end)
+	            // convert to geojson 
+                geoNewAnnot = self.convertCircleToGeo(newAnnot);
+                console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+            } // end ifPointExists
+			
+            if(Object.getOwnPropertyNames(geoNewAnnot).length !== 0){
+                geoJSONs.push(geoNewAnnot);
+            }
+	        console.log("geoJSONs length after: " + geoJSONs.length);
+	        console.log('circleRemoveIds after geoJSONs: ' + circleRemoveIds);
 	        //console.log(geoJSONs);
+			
+            for (var j = 0; j < circleRemoveIds.length; j++) {
+	            console.log('inside circle loop');
+			
+                for (var i = 0; i < geoJSONs.length; i++) {
+		            console.log('properties.circle_id: ' + geoJSONs[i].properties.circle_id);
+		            console.log('circle array ids: ' + circleRemoveIds[j]);
+                    if (geoJSONs[i].properties.circle_id == circleRemoveIds[j]) {
+		                //alert('Ready to remove');
+                        geoJSONs.splice(i,1);
+                        break;
+                     }
+                }
+            }
+			
+			
+            console.log("geoJSONs length after removal: " + geoJSONs.length);
+            //annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
+			
+		 
+         }); //end for each
 		
-            //this.promptForAnnotation(geoNewAnnot, 'new', this, ctx);
-	        //annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
+         self.promptForAnnotations(geoJSONs, 'new', self, null);
 		
-		// }); // end for each
+         //jQuery("svg").css("cursor", "default");
+         //jQuery("#drawDotButton").removeClass("active");
 		
-	    self.promptForAnnotations(geoJSONs, 'new', self, null);
-		
-        //jQuery("svg").css("cursor", "default");
-        //jQuery("#drawDotButton").removeClass("active");
-		
-    });
+    }); 
 		
 }
 	
