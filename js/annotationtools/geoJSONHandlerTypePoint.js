@@ -22,6 +22,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
 	  'bbox': [],
       'radius': 3,
 	  'fill_color': '#ffff00',
+	  'circle_id': "",
       'polygon_object_ids': []
     },
     'footprint': 10000,
@@ -29,7 +30,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
       'analysis': {
         'execution_id': 'dotnuclei',
         'study_id': "",
-        'source': "human",
+        'source': 'human',
         'computation': 'detection'
       },
       'image': {
@@ -85,6 +86,7 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
     
 	geoAnnot.properties.bbox = bbox;
 	//geoAnnot.properties.radius = radius;
+	geoAnnot.properties.circle_id = annotation.circleId;
     
 	//geoAnnot.footprint = area;
 	geoAnnot.geometry.coordinates = coordinates;
