@@ -225,6 +225,14 @@ annotools.prototype.drawDots = function() {
 				console.log('g #' + 'circle_' + creation);
 				circleRemoveIds.push(tmpId);
 				console.log('circleRemoveIds in: ' + circleRemoveIds);
+				for (var k = 0; k < geoJSONs.length; k++) {
+					console.log('properties.circle_id: ' + geoJSONs[k].properties.circle_id);
+                    if (geoJSONs[k].properties.circle_id == tmpId) {
+						alert('Ready to remove');
+                        geoJSONs.splice(i,1);
+                        break;
+                     }
+			    }
                 d3.selectAll('g #' + 'circle_' + creation).remove();
             });
         
