@@ -322,3 +322,80 @@ annotools.prototype.displayGeoPointAnnots = function () {
   //}	
 }
 
+// display circle start
+annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotools) {
+
+	
+    //alert('hello generateCircleSVG');
+    //console.log('generateCircleSVG() start');
+	var svgHtml;
+	
+    var id = '';
+      
+    if (annotation['_id']) {
+        id = annotation['_id']['$oid']
+	}
+	
+    //console.log('Annotation: ' + JSON.stringify(annotation, null, 4));
+    var nativepoints = annotation.geometry.coordinates[0]
+    var currentRadius = 3;
+	var hoverRadius = currentRadius * 3;
+    //var fillColor = '#ff2626';
+    var fillColor = '#ffff00';
+    var hoverColor = '#ffff00';
+			
+    for (var k = 0; k < nativepoints.length; k++) {
+
+        var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
+        var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+				
+        svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
+        svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
+        svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
+        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
+        svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
+        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
+        svgHtml += '/>';
+	}
+	
+	
+	//console.log('generateCircleSVG() end');
+	
+	return svgHtml;
+  
+}
+// display circle end
+
+
+annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, annotools) {
+
+    //console.log('generateCircleSVG() start');
+	var svgHtml;
+    var id = annotationId;
+	var nativepoints = nativepoints;
+      
+    // console.log(annotation)
+    var currentRadius = 3;
+	var hoverRadius = currentRadius * 3;
+    //var fillColor = '#ff2626';
+    var fillColor = '#ffff00';
+    var hoverColor = '#ffff00';
+			
+    for (var k = 0; k < nativepoints.length; k++) {
+
+        var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
+        var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+				
+        svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
+        svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
+        svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
+        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
+        svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
+        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
+        svgHtml += '/>';
+	}
+	
+	return svgHtml;
+	//console.log('generateCircleSVG() end');
+  
+}

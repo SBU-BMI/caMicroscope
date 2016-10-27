@@ -291,28 +291,11 @@ annotools.prototype.generateSVG = function (annotations) {
       // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
       var algorithm_id = annotation.provenance.analysis.execution_id
       var color = algorithm_color[algorithm_id]
-      
+	  
       // circle start
       if (annotation.geometry.type === 'Point') {
-         var currentRadius = 3;
-         var hoverRadius = currentRadius * 3;
-         //var fillColor = '#ff2626';
-         var fillColor = '#ffff00';
-         var hoverColor = '#ffff00';
-			
-         for (var k = 0; k < nativepoints.length; k++) {
-
-            var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
-            var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
-				
-            svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
-            svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
-            svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
-            svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
-            svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
-            svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
-            svgHtml += '/>';
-         }
+		  
+         svgHtml += self.generateCircleSVG(id, nativepoints, self);
       }
       // circle end
 
