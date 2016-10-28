@@ -380,7 +380,15 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
     //var fillColor = '#ff2626';
     var fillColor = '#ffff00';
     var hoverColor = '#ffff00';
-			
+	
+	//aj start
+    var data = annotools.getProperties(annotationId);
+	//console.log(data.properties.annotations.region);
+    //console.log(data);
+	console.log(JSON.stringify(data, null, 4));
+	var result = JSON.parse(data);
+	//aj end
+	
     for (var k = 0; k < nativepoints.length; k++) {
 
         var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
@@ -399,3 +407,115 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
 	//console.log('generateCircleSVG() end');
   
 }
+
+
+/*
+https://api.jquery.com/jquery.get/
+jQuery.get()(url[,data][,success][,dataType])
+success - a callback function that is executed if the request succeeds
+dataType - type: String
+*/
+annotools.prototype.getProperties1 = function (annotId) {
+	
+    //aj start
+    var url = "api/Data/getProperties.php?id=" + annotId;
+	var isLymphocyte = false;
+	var data = {};
+	
+	
+    jQuery.get(url, function(d) {
+        try {
+            data = JSON.parse(d)[0];
+        } catch(e) {
+            console.log(e);
+        }
+        console.log(data);
+
+        try {
+            if(data.properties.annotations.region) {
+			    console.log(data.properties.annotations.region);
+				isLymphocyte = true;
+				console.log(isLymphocyte);
+			}
+        } catch(e) {
+            console.log(e);
+        }
+	});
+	//aj end
+	
+}
+
+annotools.prototype.getProperties2 = function (annotId) {
+	
+    //aj start
+    var url = "api/Data/getProperties.php?id=" + annotId;
+	
+	var data = '';
+	
+	
+    jQuery.get(url, function(d) {
+        try {
+            data = JSON.parse(d)[0];
+        } catch(e) {
+            console.log(e);
+        }
+        console.log(data);
+	});
+	//aj end
+	return data;
+	
+}
+
+//works
+annotools.prototype.getProperties3 = function () {
+	
+    var jsonReturn = '';
+	var jsonRequest = jQuery.ajax({
+      url: "api/Data/retreiveTemplate.php",
+      success: function(e){
+          //console.log(e)
+          jsonReturn  = JSON.parse(e)[0]
+          //console.log(jsonReturn)
+      },
+      async: false
+  })
+	
+  console.log(jsonReturn);
+	
+return jsonReturn;
+}
+
+annotools.prototype.getProperties5 = function () {
+	
+    var jsonReturn = '';
+	var jsonRequest = jQuery.ajax({
+      url: "api/Data/retreiveTemplate.php",
+      success: function(e){
+          //console.log(e)
+          jsonReturn  = JSON.parse(e)[0]
+          //console.log(jsonReturn)
+      },
+      async: false
+  })
+	
+  console.log(jsonReturn);
+	
+return jsonReturn;
+}
+
+//works
+annotools.prototype.getProperties = function (annotId) {
+    return jQuery.ajax({
+        type: "GET",
+        url: "api/Data/getProperties.php?id=" + annotId,
+        async: false,
+        success: function (result) {
+            /* if result is a JSon object */
+            if (result.valid)
+                return true;
+            else
+                return false;
+        }
+    });
+}
+
