@@ -15,7 +15,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
       'coordinates': []
     },
     'normalized': true,
-    'object_type': 'nucleus', // nucleus?
+    'object_type': 'nucleus',
     'properties': {
       'scalar_features': [],
       'annotations': [],
@@ -45,7 +45,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
   return geoJSONTemplateTypePoint;
 }
 
-// under development
+
 annotools.prototype.convertCircleToGeo = function (annotation) {
  
     var origin = new OpenSeadragon.Point(this.imagingHelper.physicalToDataX(annotation.x), this.imagingHelper.physicalToDataY(annotation.y))
@@ -59,7 +59,6 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
 	
 	//var area = radius * radius * Math.PI;
 	
-   
 	var coordinates = [];
 	var x = annotation.x;
 	var y = annotation.y;
@@ -94,217 +93,8 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
   return geoAnnot;
 }
 
+/*
 annotools.prototype.generatePointSVG = function (annotations) {
-	
-    // console.log(annotation)
-  // var annotation = annotations[ii]
-  var self =this;
-  var annotations = this.annotations
-  if (annotations) {
-    var markup_svg = document.getElementById('markups')
-    if (markup_svg) {
-      // console.log("destroying")
-      markup_svg.destroy()
-    }
-
-    // console.log(annotations.length)
-    var container = document.getElementsByClassName(this.canvas)[0] // Get The Canvas Container
-    // console.log(nativepoints)
-    // var container = document.getElementsByClassName(this.cavas)[0]
-    // console.log(container)
-    var width = parseInt(container.offsetWidth)
-    var height = parseInt(container.offsetHeight)
-    /* Why is there an ellipse in the center? */
-    var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups">'
-    svgHtml += '<g id="groupcenter"/>'
-    svgHtml += '<g id="origin">'
-    var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5))
-    svgHtml += '<ellipse id="originpt" cx="' + origin.x + '" cy="' + origin.y + '" rx="' + 4 + '" ry="' + 4 + '" style="display: none"/>'
-    svgHtml += '</g>'
-    svgHtml += '<g id="viewport" transform="translate(0,0)">'
-
-    for (var i = 0; i < annotations.length; i++) {
-      var annotation = annotations[i]
-
-      var id = '';
-      
-      if (annotation['_id'])
-        id = annotation['_id']['$oid']
-      // console.log(annotation)
-      var nativepoints = annotation.geometry.coordinates[0]
-
-      // var offset = OpenSeadragon.getElementOffset(viewer.canvas)
-      var algorithm_id = annotation.provenance.analysis.execution_id
-      var color = algorithm_color[algorithm_id]
-      
-      // circle start
-      if (annotation.geometry.type === 'Point') {
-         var currentRadius = 3;
-         var hoverRadius = currentRadius * 3;
-         //var fillColor = '#ff2626';
-         var fillColor = '#ffff00';
-         var hoverColor = '#ffff00';
-			
-         for (var k = 0; k < nativepoints.length; k++) {
-
-            var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
-            var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
-				
-            svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
-            svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
-            svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
-            svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
-            svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
-            svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
-            svgHtml += '/>';
-         }
-      }
-      // circle end
-
-      // var svg = 
-      svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
-
-      // svgHtml += '<polygon onclick="clickSVG(event)" class="annotationsvg" id="'+"poly"+i+'" points="'
-      var polySVG = ''
-      for (var k = 0; k < nativepoints.length; k++) {
-
-        var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0])
-        var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
-        // svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
-        // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
-        svgHtml += polyPixelX + ',' + polyPixelY + ' '
-      }
-
-      //svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>'
-      if(color === undefined)
-        color = 'lime'
-      svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
-    }
-    this.svg = new Element('div', {
-      styles: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%'
-      },
-      html: svgHtml
-    }).inject(container)
-  }
-
-
-
-  var ctrl = false;
-  jQuery(document).keydown(function(event){
-    //console.log("control");
-    //console.log(event);
-    if(event.which == 17 || event.which == 91)
-      ctrl = true;
-
-  });
-  jQuery(document).keyup(function(){
-        ctrl = false;
-  });
-  jQuery('.annotationsvg').mousedown(function (event) {
-        //console.log(event.which);
-        if(ctrl){
-          //console.log("double clicked");
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-          //return false;
-        } else {
-          return;
-        }
-        var panel = jQuery('#panel').show('slide')
-        panel.html('');
-        jQuery(".annotationsvg").css("opacity", 0.5);
-        jQuery("#"+event.target.id).css("opacity", 1);
-        var id = event.target.id
-        var url = "api/Data/getProperties.php?id="+id;
-        var content = "<div id = 'panelHeader'> <h4>Annotation Details </h4></div>"
-        + "<div id='panelBody'>";
-
-        jQuery.get(url, function(d){
-          var data = {}
-          
-          try{
-            data = JSON.parse(d)[0];
-          } catch(e){
-            console.log(e);
-          }
-          //console.log(data);
-          var features = [];
-          var properties = {};
-          try {
-            if(data.properties.scalar_features)
-              features=  data.properties.scalar_features[0].nv;
-            properties = data.properties.annotations;
-          } catch(e){
-            console.log(e);
-          }
-          for(var i in properties){
-            
-            if(i == "secret"){
-
-            } else {
-              var line = "<div class='markupProperty'><strong>"+i+"</strong>: " + properties[i]+"</div>";
-              content+=line;
-            }
-          
-          }
-
-          for(var i =0; i< features.length; i++){
-            var feature = features[i];
-            var line = "<div class='markupFeature'><div class='markupFeatureName'>"+feature.name +"</div> <div class='markupFeatureValue'>"+feature.value+"</div></div>";
-            content+=line;
-          }
-
-          content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
-          content += "<button class='btn' id='cancelPanel'>Cancel</button>";
-          content +="</div>";
-          var cancel = function () {
-           
-            jQuery('#panel').hide('slide')
-
-          }
-
-          panel.html(content);
-
-
-          jQuery("#cancelPanel").click(function(){cancel();});
-
-          jQuery("#deleteAnnot").click(function(e) {
-            
-            //$("#confirmDelete").css(
-            //console.log(data.provenance.analysis.source);
-            if(data.provenance.analysis.source == "human"){
-              jQuery("#confirmDeleteButton").click(function(){
-                var secret = jQuery("#deleteSecret").val();
-                var payload = {
-                  "id": id,
-                  "secret": secret
-                }
-              
-                jQuery.ajax({
-                  url: 'api/Data/getProperties.php?id='+id,
-                  type: 'DELETE',
-                  data:(payload),
-                  success: function(data){
-                    console.log(data);
-                    jQuery("#panel").hide("slide");
-                    self.getMultiPointAnnot();
-                  }
-                });
-              });
-            } else {
-              alert("Can't delete computer generated segments");
-            }
-          });
-
-        });
-    
-  })
 
 }
 
@@ -312,82 +102,40 @@ annotools.prototype.displayGeoPointAnnots = function () {
 	
 	var geoJSONs = this.annotations;
 	
-    //if (this.annotVisible) {
-    
     this.generatePointSVG(geoJSONs);
     
     var renderStartTime = 9;
     var renderEndTime = 23;
-	
-  //}	
 }
-
-// display circle start
-annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotools) {
-
-	
-    //alert('hello generateCircleSVG');
-    //console.log('generateCircleSVG() start');
-	var svgHtml;
-	
-    var id = '';
-      
-    if (annotation['_id']) {
-        id = annotation['_id']['$oid']
-	}
-	
-    //console.log('Annotation: ' + JSON.stringify(annotation, null, 4));
-    var nativepoints = annotation.geometry.coordinates[0]
-    var currentRadius = 3;
-	var hoverRadius = currentRadius * 3;
-    //var fillColor = '#ff2626';
-    var fillColor = '#ffff00';
-    var hoverColor = '#ffff00';
-			
-    for (var k = 0; k < nativepoints.length; k++) {
-
-        var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
-        var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
-				
-        svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
-        svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
-        svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
-        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
-        svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
-        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
-        svgHtml += '/>';
-	}
-	
-	
-	//console.log('generateCircleSVG() end');
-	
-	return svgHtml;
-  
-}
-// display circle end
-
+*/
 
 annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, annotools) {
 
-    //console.log('generateCircleSVG() start');
-	var svgHtml;
+    var svgHtml;
     var id = annotationId;
-	var nativepoints = nativepoints;
-      
-    // console.log(annotation)
-    var currentRadius = 3;
-	var hoverRadius = currentRadius * 3;
-    //var fillColor = '#ff2626';
+    var nativepoints = nativepoints;
+
+    var currentRadius;
+	var hoverRadius = currentRadius * 4;
     var fillColor = '#ffff00';
     var hoverColor = '#ffff00';
 	
-	//aj start
-    var data = annotools.getProperties(annotationId);
-	//console.log(data.properties.annotations.region);
-    //console.log(data);
-	console.log(JSON.stringify(data, null, 4));
-	var result = JSON.parse(data);
-	//aj end
+    var response = annotools.getProperties(annotationId);
+	var result = JSON.parse(response.responseText);
+    var lymphocyteRegion = 'Lymphocyte';
+
+    // console.log(JSON.stringify(result, null, 4));
+    if (result[0].properties.annotations.region === lymphocyteRegion) {
+        fillColor = 'lime';
+        hoverColor = 'lime';
+    }
+    
+    if (result[0].properties.radius) {
+        currentRadius = result[0].properties.radius;
+    }
+    else {
+        currentRadius = 3;
+    }
 	
     for (var k = 0; k < nativepoints.length; k++) {
 
@@ -404,113 +152,17 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
 	}
 	
 	return svgHtml;
-	//console.log('generateCircleSVG() end');
-  
 }
 
-
-/*
-https://api.jquery.com/jquery.get/
-jQuery.get()(url[,data][,success][,dataType])
-success - a callback function that is executed if the request succeeds
-dataType - type: String
-*/
-annotools.prototype.getProperties1 = function (annotId) {
-	
-    //aj start
-    var url = "api/Data/getProperties.php?id=" + annotId;
-	var isLymphocyte = false;
-	var data = {};
-	
-	
-    jQuery.get(url, function(d) {
-        try {
-            data = JSON.parse(d)[0];
-        } catch(e) {
-            console.log(e);
-        }
-        console.log(data);
-
-        try {
-            if(data.properties.annotations.region) {
-			    console.log(data.properties.annotations.region);
-				isLymphocyte = true;
-				console.log(isLymphocyte);
-			}
-        } catch(e) {
-            console.log(e);
-        }
-	});
-	//aj end
-	
-}
-
-annotools.prototype.getProperties2 = function (annotId) {
-	
-    //aj start
-    var url = "api/Data/getProperties.php?id=" + annotId;
-	
-	var data = '';
-	
-	
-    jQuery.get(url, function(d) {
-        try {
-            data = JSON.parse(d)[0];
-        } catch(e) {
-            console.log(e);
-        }
-        console.log(data);
-	});
-	//aj end
-	return data;
-	
-}
-
-//works
-annotools.prototype.getProperties3 = function () {
-	
-    var jsonReturn = '';
-	var jsonRequest = jQuery.ajax({
-      url: "api/Data/retreiveTemplate.php",
-      success: function(e){
-          //console.log(e)
-          jsonReturn  = JSON.parse(e)[0]
-          //console.log(jsonReturn)
-      },
-      async: false
-  })
-	
-  console.log(jsonReturn);
-	
-return jsonReturn;
-}
-
-annotools.prototype.getProperties5 = function () {
-	
-    var jsonReturn = '';
-	var jsonRequest = jQuery.ajax({
-      url: "api/Data/retreiveTemplate.php",
-      success: function(e){
-          //console.log(e)
-          jsonReturn  = JSON.parse(e)[0]
-          //console.log(jsonReturn)
-      },
-      async: false
-  })
-	
-  console.log(jsonReturn);
-	
-return jsonReturn;
-}
-
-//works
 annotools.prototype.getProperties = function (annotId) {
+    
     return jQuery.ajax({
         type: "GET",
         url: "api/Data/getProperties.php?id=" + annotId,
+        dataType: "json",
         async: false,
         success: function (result) {
-            /* if result is a JSon object */
+            /* if result is a JSON object */
             if (result.valid)
                 return true;
             else
