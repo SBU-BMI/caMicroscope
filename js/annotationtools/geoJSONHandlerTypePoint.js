@@ -116,12 +116,12 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
     var nativepoints = nativepoints;
 
     var currentRadius = 3;
-	var hoverRadius = currentRadius * 4;
+    var hoverRadius = currentRadius * 4;
     var fillColor = '#ffff00';
     var hoverColor = '#ffff00';
 	
     var response = annotools.getProperties(annotationId);
-	var result = JSON.parse(response.responseText);
+    var result = JSON.parse(response.responseText);
     var lymphocyteRegion = 'Lymphocyte';
 
     // console.log(JSON.stringify(result, null, 4));
@@ -144,7 +144,7 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
         svgHtml += '/>';
 	}
 	
-	return svgHtml;
+    return svgHtml;
 }
 
 annotools.prototype.getProperties = function (annotId) {
