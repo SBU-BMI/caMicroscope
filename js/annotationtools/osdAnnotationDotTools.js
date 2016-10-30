@@ -129,10 +129,18 @@ annotools.prototype.drawDots = function() {
                 console.log('properties.circle_id: ' + geoJSONs[k].properties.circle_id);
                     if (geoJSONs[k].properties.circle_id == tmpId) {
                         //alert('Ready to remove');
-                        geoJSONs.splice(i,1);
+                        geoJSONs.splice(k,1);
+                       
                         break;
                     }
 			    }
+                //aj
+                   for (var l = 0; l < geoJSONs.length; l++) {
+                       console.log('After break right properties.circle_id: ' + geoJSONs[l].properties.circle_id);
+                       
+                   }
+                        
+                //aj 
                 //d3.selectAll('g #' + 'circle_' + creation).remove();
             });
         
@@ -155,11 +163,11 @@ annotools.prototype.drawDots = function() {
 			
                 //console.log('isPointExists: ' + isPointExists);
                 console.log('circleId: ' + circleId);
-                console.log('xCenterPtTmp: ' + xCenterPtTmp);
-                console.log('yCenterPtTmp: ' + yCenterPtTmp);
-                console.log('xCenterPt: ' + xCenterPt);
-                console.log('yCenterPt: ' + yCenterPt);
-                console.log('geoJSONs.length before: ' + geoJSONs.length);
+                //console.log('xCenterPtTmp: ' + xCenterPtTmp);
+                //console.log('yCenterPtTmp: ' + yCenterPtTmp);
+                //console.log('xCenterPt: ' + xCenterPt);
+                //console.log('yCenterPt: ' + yCenterPt);
+                //console.log('geoJSONs.length before: ' + geoJSONs.length);
 			
                 if ( xCenterPtTmp == xCenterPt && yCenterPtTmp == yCenterPt ) {
 				
@@ -199,7 +207,7 @@ annotools.prototype.drawDots = function() {
                          loc: []
 	             }
 		
-	            console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
+	            //console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
 	            //console.log(annotools.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
 		
                 var globalNumbers = JSON.parse(self.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
@@ -219,24 +227,24 @@ annotools.prototype.drawDots = function() {
 	            // convertFromNative = function (annot, end)
 	            // convert to geojson 
                 geoNewAnnot = self.convertCircleToGeo(newAnnot);
-                console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+                //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
             } // end ifPointExists
 			
             if(Object.getOwnPropertyNames(geoNewAnnot).length !== 0){
                 geoJSONs.push(geoNewAnnot);
             }
-	        console.log("geoJSONs length after: " + geoJSONs.length);
-	        console.log('circleRemoveIds after geoJSONs: ' + circleRemoveIds);
+	        console.log("geoJSONs length after after push: " + geoJSONs.length);
+	        console.log('circleRemoveIds after push geoJSONs but before removal: ' + circleRemoveIds);
 	        //console.log(geoJSONs);
 			
             for (var j = 0; j < circleRemoveIds.length; j++) {
-	            console.log('inside circle loop');
+	            console.log('inside circle loop length: ' + circleRemoveIds.length);
 			
                 for (var i = 0; i < geoJSONs.length; i++) {
-		            console.log('properties.circle_id: ' + geoJSONs[i].properties.circle_id);
-		            console.log('circle array ids: ' + circleRemoveIds[j]);
+		            console.log('Test 1 properties.circle_id: ' + geoJSONs[i].properties.circle_id);
+		            console.log('Test 1 circle array ids: ' + circleRemoveIds[j]);
                     if (geoJSONs[i].properties.circle_id == circleRemoveIds[j]) {
-		                //alert('Ready to remove');
+		                alert(geoJSONs[i].properties.circle_id + ' ' + circleRemoveIds[j]);
                         geoJSONs.splice(i,1);
                         break;
                      }
