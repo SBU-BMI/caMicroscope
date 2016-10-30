@@ -312,21 +312,26 @@ ToolBar.prototype.createButtons = function () {
       this.annotools.downloadROI();
     }.bind(this));
       
-    // Dot Tool start
+      
     this.dotToolButton.on('click', function(){
         if (this.annotools.mode == 'dot') {
-            this.setNormalMode();
+            this.annotools.mode = 'normal';
+            jQuery('svg').css('cursor', 'default');
+            jQuery('#drawDotButton').removeClass('active');   // Dot Tool
+            this.annotools.svg.hide();
+            this.annotools.addMouseEvents();
+            this.annotools.getMultiAnnot();
         }else{
             this.mode = 'dot';
             this.annotools.mode = 'dot';
             this.annotools.drawDots();
-            jQuery("svg").css("cursor", "crosshair");
-            jQuery("#drawRectangleButton").removeClass("active");
-            jQuery("#drawFreelineButton").removeClass("active");
-            jQuery("#drawDotButton").addClass("active");
+            jQuery('svg').css('cursor', 'crosshair');
+            jQuery('#drawRectangleButton').removeClass('active');
+            jQuery('#drawFreelineButton').removeClass('active');
+            jQuery('#drawDotButton').addClass('active');
        }   
     }.bind(this)); 
-    // Dot Tool end
+      
 	  
     this.ellipsebutton.on('click', function () {
       // this.mode = 'ellipse'
