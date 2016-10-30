@@ -292,31 +292,33 @@ annotools.prototype.generateSVG = function (annotations) {
       var algorithm_id = annotation.provenance.analysis.execution_id
       var color = algorithm_color[algorithm_id]
 	  
-      // circle start
+      // circle
       if ( algorithm_id === 'dotnuclei' && annotation.geometry.type === 'Point') {
 		  
          svgHtml += self.generateCircleSVG(id, nativepoints, self);
       }
-      // circle end
+      else {
 
-      // var svg = 
-      svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
+         // var svg = 
+         svgHtml += '<polygon  class="annotationsvg" id="' + id + '" points="'
 
-      // svgHtml += '<polygon onclick="clickSVG(event)" class="annotationsvg" id="'+"poly"+i+'" points="'
-      var polySVG = ''
-      for (var k = 0; k < nativepoints.length; k++) {
+         // svgHtml += '<polygon onclick="clickSVG(event)" class="annotationsvg" id="'+"poly"+i+'" points="'
+         var polySVG = ''
+         for (var k = 0; k < nativepoints.length; k++) {
 
-        var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0])
-        var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
-        // svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
-        // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
-        svgHtml += polyPixelX + ',' + polyPixelY + ' '
+            var polyPixelX = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0])
+            var polyPixelY = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
+            // svgHtml += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
+            // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
+            svgHtml += polyPixelX + ',' + polyPixelY + ' '
+         }
+
+         //svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>'
+         if(color === undefined)
+            color = 'lime'
+         svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
+      
       }
-
-      //svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>'
-      if(color === undefined)
-        color = 'lime'
-      svgHtml += '" style="fill:transparent; stroke:'+color+ '; stroke-width:2.5"/>'
     }
     this.svg = new Element('div', {
       styles: {
