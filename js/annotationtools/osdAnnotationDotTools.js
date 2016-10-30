@@ -7,10 +7,6 @@ annotools.prototype.drawDots = function() {
     var circleRemoveIds = [];
     var radius  = 3;
     var fillColor = '#ff2626';
-    var fillColorOne = '#ffff00';  // yellow
-    var fillColorTwo = '#ff2626';  // red
-    //var hoverColor = '#ff2626';
-    var backgroundColor = '#DAC99A';
     var hoverRadius = 10;
 	
 	
@@ -90,103 +86,6 @@ annotools.prototype.drawDots = function() {
     // d3.js
     var svgHtmlDot = d3.select('svg');
     var viewPort =  d3.select('#viewport');
-	
-	// add buttons to svg start
-    /*
-    var w = 95;
-    var h = 35;
-    
-    var bWidth = 40; //button width
-    var bHeight = 25; //button height
-    var bSpace = 5; //space between buttons
-    var x0 = (width / 2) - (w / 2); //x offset
-    var y0 = 55; //y offset
-    var x1 = x0 + 45;
-	
-    //backdrop of colors
-    var background= svgHtmlDot.append("rect")
-        .attr('id', 'backgroundRect')
-        .attr('width', w)
-        .attr('height', h)
-        .attr('x', (width / 2) - (w / 2) - 5)
-        .attr('y', 50)
-        .attr('fill', backgroundColor).style('opacity', .6);
-    
-    var allButtons= svgHtmlDot.append('g').attr('id','allButtons');
-
-	d3.selectAll('rect').each(function(){
-        //when an item is clicked, svgClickEvents must not be fired   
-        d3.select('#backgroundRect').on('click', null);  //this should remove the event listener
-
-        d3.select(this).on('click', function() {
-            d3.event.stopPropagation(); 
-            console.log('click rect 1');
-        });
-    });
-	
-    //container for all buttons
-    var allButtons= svgHtmlDot.append('g').attr('id', 'allButtons');
-    
-    var buttonOne = allButtons.append('rect')
-        .attr('class', 'buttonRect')
-        .attr('width', bWidth)
-        .attr('height', bHeight)
-        .attr('x', x0)
-        .attr('y', y0)
-        .attr('rx', 5) //rx and ry give the buttons rounded corners
-        .attr('ry', 5)
-        .attr('fill', fillColorOne)
-        .attr('id', 'buttonOne')
-        .attr('class','button')
-        .attr('title', 'Lymphocyte')
-        .style('cursor','pointer')
-        .on('contextmenu', function (d, i) {
-            d3.event.preventDefault();
-            // react on right-clicking;
-            fillColor = fillColorOne;
-        });
-    
-     d3.selectAll('rect').each(function() {
-        
-        d3.select('#buttonOne').on('click', null);  //this should remove the event listener
-       
-        d3.select(this).on('click', function() {
-            d3.event.stopPropagation(); 
-            console.log('click rect 2');
-        });
-    });
-    
-            
-    var buttonTwo = allButtons.append('rect')
-        .attr('class', 'buttonRect')
-        .attr('width', bWidth)
-        .attr('height', bHeight)
-        .attr('x', x1)
-        .attr('y', y0)
-        .attr('rx', 5) //rx and ry give the buttons rounded corners
-        .attr('ry', 5)
-        .attr('fill', fillColorTwo)
-        .attr('id', 'buttonTwo')
-        .attr('class', 'button')
-        .attr('title', 'Non Lymphocyte')
-        .style('cursor','pointer')
-            .on('contextmenu', function (d, i) {
-            d3.event.preventDefault();
-            // react on right-clicking;
-            fillColor = fillColorTwo;
-        });
-    
-    d3.selectAll('rect').each(function() {
-        
-        d3.select('#buttonTwo').on('click', null);  //this should remove the event listener
-
-        d3.select(this).on('click', function() {
-            d3.event.stopPropagation(); 
-            console.log('click rect');
-        });
-    });
-    */
-    // end buttons
 	
     // group circle elements together
     var circleGroup = viewPort.append('g');
@@ -291,10 +190,10 @@ annotools.prototype.drawDots = function() {
                          x: startRelativeMousePosition.x,
                          y: startRelativeMousePosition.y,
                          w: w,
-	                 h: h,
-			         cx: centerPtRelativeMousePosition.x,
-			         cy: centerPtRelativeMousePosition.y,
-	                 type: 'circle',
+	                     h: h,
+			             cx: centerPtRelativeMousePosition.x,
+			             cy: centerPtRelativeMousePosition.y,
+	                     type: 'circle',
                          circleId: circleId,
                          color: this.color,
                          loc: []
@@ -348,23 +247,16 @@ annotools.prototype.drawDots = function() {
             console.log("geoJSONs length after removal: " + geoJSONs.length);
             //annotools.promptForAnnotation(geoNewAnnot, 'new', annotools, null);
 			
-		 
          }); //end for each
 		
          self.promptForAnnotations(geoJSONs, 'new', self, null);
 		
-         //jQuery("svg").css("cursor", "default");
-         //jQuery("#drawDotButton").removeClass("active");
+         // jQuery("svg").css("cursor", "default");
+         jQuery("#drawDotButton").removeClass("active");
 		
     }); 
-		
 }
 	
-// this.imagingHelper.logicalToPhysicalY(nativepoints[k][1])
-annotools.prototype.convertToNativeCoord = function (annot) {
-}
-
-//function convertFromNative (line)
 annotools.prototype.convertFromNativeCoord = function (annot, end) {
     
     var x = annot.x;
@@ -391,16 +283,6 @@ annotools.prototype.convertFromNativeCoord = function (annot, end) {
     return globalNumber;
 }
 
-// test getMultiPointAnnot()
-annotools.prototype.showDotTools = function() {
-
-    var self = this;
-	
-    self.getMultiPointAnnot();
-   
-    console.log('Test getMultiPointAnnot');
-  
-}
 
 annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools, ctx) {
     jQuery('#panel').show('slide')
@@ -478,41 +360,43 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
               }
           })
 			
-		 //annotools.getMultiPointAnnot();
-         annotools.getMultiAnnot();
+        //annotools.getMultiPointAnnot();
+        annotools.getMultiAnnot();
 		  
-	  // POST end
+        // POST end
 		  
-	  /*
-	  jQuery('#panel').hide('slide')
-          annotools.drawLayer.hide()
-          annotools.svg.hide()
-          annotools.addMouseEvents()
-          return false
-	  */
-       }
-      // Hide Panel
-      jQuery('#panel').hide('slide')
-      annotools.drawLayer.hide()
-      annotools.svg.hide()
-      annotools.addMouseEvents()
+        /*
+        jQuery('#panel').hide('slide')
+        annotools.drawLayer.hide()
+        annotools.svg.hide()
+        annotools.addMouseEvents()
+        return false
+        */
+        }
+        // Hide Panel
+        jQuery('#panel').hide('slide');
+        annotools.drawLayer.hide();
+        annotools.svg.hide();
+        annotools.addMouseEvents();
 
-      return false
+        return false;
     }
 
     var cancelAnnotation = function () {
-      console.log('cancel handler')
-      jQuery('#panel').hide('slide')
-      annotools.drawLayer.hide()
-      annotools.svg.hide()
-      annotools.addMouseEvents()
+        console.log('cancel handler');
+        jQuery('#panel').hide('slide');
+        annotools.drawLayer.hide();
+        annotools.svg.hide();
+        annotools.addMouseEvents();
+        jQuery("#drawDotButton").removeClass("active");
+        annotools.getMultiAnnot();
     }
 
-    jQuery('#annotationsForm').jsonForm(formSchema)
+    jQuery('#annotationsForm').jsonForm(formSchema);
   })
 }
 
-// under development
+// deprecated
 annotools.prototype.getMultiPointAnnot = function (viewer) {
 
     //var algorithms = ['luad:bg:20160520', 'humantest'];
