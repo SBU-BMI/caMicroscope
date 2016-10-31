@@ -118,7 +118,7 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
     var response = annotools.getProperties(annotationId);
     var result = JSON.parse(response.responseText);
     var currentRadius = result[0].properties.radius;
-    var hoverRadius = currentRadius * 4;
+    var hoverRadius = currentRadius * 3;
     var fillColor = result[0].properties.fill_color;
     var hoverColor = result[0].properties.fill_color;
     var region = result[0].properties.annotations.region;
@@ -127,6 +127,8 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
     var lymphocyteRegion = 'Lymphocyte';
 	
     var text = region;
+    var opacityOver = '0.5';
+    var opacityOut = '1';
 
     /*
     console.log(JSON.stringify(result, null, 4));
@@ -163,7 +165,8 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
             text += additionalNotes;
         }	
     }
-    
+    //onmouseover="evt.target.setAttribute('opacity', '0.5');"
+    //onmouseout="evt.target.setAttribute('opacity','1)');"/>
     for (var k = 0; k < nativepoints.length; k++) {
 
         var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
@@ -172,10 +175,12 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
         svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
         svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
         svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
-        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
-        svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
-        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
-		svgHtml += '><title>' + text + '</title></circle>';
+        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\');'; 
+        svgHtml += 'evt.target.setAttribute(\'opacity\',\'' + opacityOver + '\'); "';
+        svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');';
+        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\');'; 
+        svgHtml += 'evt.target.setAttribute(\'opacity\',\'' + opacityOut + '\'); "';
+        svgHtml += '><title>' + text + '</title></circle>';
 	}
 	
     return svgHtml;
