@@ -114,21 +114,54 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
     var svgHtml;
     var id = annotationId;
     var nativepoints = nativepoints;
-
-    var currentRadius = 3;
-    var hoverRadius = currentRadius * 4;
-    var fillColor = '#ffff00';
-    var hoverColor = '#ffff00';
 	
     var response = annotools.getProperties(annotationId);
     var result = JSON.parse(response.responseText);
+	var currentRadius = result[0].properties.radius;
+    var hoverRadius = currentRadius * 4;
+    var fillColor = result[0].properties.fill_color;
+    var hoverColor = result[0].properties.fill_color;
+	var region = result[0].properties.annotations.region;
+	var additionalAnnotation = result[0].properties.annotations.additional_annotation;
+	var additionalNotes = result[0].properties.annotations.additional_notes;
     var lymphocyteRegion = 'Lymphocyte';
+	
+	var text = region;
 
-    // console.log(JSON.stringify(result, null, 4));
-    if (result[0].properties.annotations.region === lymphocyteRegion) {
+	/*
+    console.log(JSON.stringify(result, null, 4));
+	console.log(result[0].properties.annotations.region);
+	console.log(result[0].properties.annotations.additional_annotation);
+	console.log(result[0].properties.annotations.additional_notes);
+	console.log(result[0].properties.radius);
+	console.log(result[0].properties.fill_color);
+	*/
+	
+    if (region === lymphocyteRegion) {
         fillColor = 'lime';
         hoverColor = 'lime';
     }
+	
+	if (currentRadius === undefined) {
+		currentRadius = 3;
+	}
+	
+	if (fillColor === undefined) {
+		fillColor = '#ffff00';
+		hoverColor = '#ffff00';
+	}
+	
+	if (text) {
+	
+		if (additionalAnnotation) {
+			text += '\n';
+		    text += additionalAnnotation;
+		}
+		if (additionalNotes) {
+			text += '\n';
+			text += additionalNotes;
+		}	
+	}
     
     for (var k = 0; k < nativepoints.length; k++) {
 
@@ -141,7 +174,7 @@ annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, ann
         svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\'); "';
         svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');'
         svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\'); "';
-        svgHtml += '/>';
+		svgHtml += '><title>' + text + '</title></circle>';
 	}
 	
     return svgHtml;
