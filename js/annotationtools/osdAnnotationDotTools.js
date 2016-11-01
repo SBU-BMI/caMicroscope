@@ -63,11 +63,10 @@ annotools.prototype.drawDots = function() {
         event.stopImmediatePropagation();
     });
     
-	
-    d3.selectAll('.annotationsvg').attr('r', radius).style('opacity', opacityHover).style('cursor', 'pointer');
+    d3.selectAll('.annotationsvg').attr('r', radius).style('opacity', opacityHover).style('cursor', 'crosshair');
 	
     d3.selectAll('.annotationsvg').on('mouseover', function() {	
-        d3.selectAll(".annotationsvg").attr('r', radius).style('opacity', opacityHover).style('cursor', 'pointer');
+        d3.selectAll(".annotationsvg").attr('r', radius).style('opacity', opacityHover).style('cursor', 'crosshair');
     });
 	
     // d3.js
