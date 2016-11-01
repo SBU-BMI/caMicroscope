@@ -166,48 +166,47 @@ annotools.prototype.drawDots = function() {
                         color: this.color,
                         loc: []
                      }
+                    // console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
 		
-                // console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
+                    var globalNumbers = JSON.parse(self.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
+                    newAnnot.x = globalNumbers.nativeX;
+                    newAnnot.y = globalNumbers.nativeY;
+                    newAnnot.w = globalNumbers.nativeW;
+                    newAnnot.h = globalNumbers.nativeH;
+                    newAnnot.cx = globalNumbers.nativeCx;
+                    newAnnot.cy = globalNumbers.nativeCy;
+                    var loc = [];
+                    loc[0] = parseFloat(newAnnot.cx);
+                    loc[1] = parseFloat(newAnnot.cy);
+                    newAnnot.loc = loc;
+                    console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
 		
-                var globalNumbers = JSON.parse(self.convertFromNativeCoord(newAnnot, endRelativeMousePosition));
-                newAnnot.x = globalNumbers.nativeX;
-                newAnnot.y = globalNumbers.nativeY;
-                newAnnot.w = globalNumbers.nativeW;
-                newAnnot.h = globalNumbers.nativeH;
-                newAnnot.cx = globalNumbers.nativeCx;
-                newAnnot.cy = globalNumbers.nativeCy;
-                var loc = [];
-                loc[0] = parseFloat(newAnnot.cx);
-                loc[1] = parseFloat(newAnnot.cy);
-                newAnnot.loc = loc;
-                console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
-		
-                geoNewAnnot = self.convertCircleToGeo(newAnnot);
-                //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
-            }   // end if
+                    geoNewAnnot = self.convertCircleToGeo(newAnnot);
+                    //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+                }   // end if
 			
-            if(Object.getOwnPropertyNames(geoNewAnnot).length !== 0) {
-                geoJSONs.push(geoNewAnnot);
-            }
+                if(Object.getOwnPropertyNames(geoNewAnnot).length !== 0) {
+                    geoJSONs.push(geoNewAnnot);
+                }
 	   
-            //console.log(geoJSONs);
-            for (var j = 0; j < circleRemoveIds.length; j++) {
-                for (var i = 0; i < geoJSONs.length; i++) {
-                    if (geoJSONs[i].properties.circle_id == circleRemoveIds[j]) {
-                        geoJSONs.splice(i,1);
-                        break;
+                //console.log(geoJSONs);
+                for (var j = 0; j < circleRemoveIds.length; j++) {
+                    for (var i = 0; i < geoJSONs.length; i++) {
+                        if (geoJSONs[i].properties.circle_id == circleRemoveIds[j]) {
+                            geoJSONs.splice(i,1);
+                            break;
+                        }
                     }
                 }
-            }
 			
-         }); //end for each
+             }); //end for each
 		
-         self.promptForAnnotations(geoJSONs, 'new', self, null);
+             self.promptForAnnotations(geoJSONs, 'new', self, null);
 		
-         // jQuery("svg").css("cursor", "default");
-         jQuery("#drawDotButton").removeClass("active");
+             // jQuery("svg").css("cursor", "default");
+             jQuery("#drawDotButton").removeClass("active");
 		
-    }); 
+    }); // end onclick
 }
 	
 
