@@ -289,7 +289,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
             // Post annotation
             // annotools.addnewAnnot(annotation)
             // POST start
-	        var self = this;
+            var self = this;
             //console.log('Save annotation function');
             //console.log(annotation);
             jQuery.ajax({
@@ -314,9 +314,8 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
               });
 			
            annotools.getMultiAnnot();
-		  
+
            // POST end
-		  
            /*
            jQuery('#panel').hide('slide')
            annotools.drawLayer.hide()
