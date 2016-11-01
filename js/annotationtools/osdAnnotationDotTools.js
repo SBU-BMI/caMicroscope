@@ -1,7 +1,6 @@
 annotools.prototype.drawDots = function() {
 	
     var self = this;
-    var pointsArr = [];
     var geoJSONs  = [];
     var circleRemoveIds = [];
     var radius  = 3;
@@ -54,7 +53,6 @@ annotools.prototype.drawDots = function() {
             },
             html: svgHtml
         }).inject(container);
-    
     }
 	
     // prevent zoom when the SVG overlay is clicked
@@ -85,8 +83,7 @@ annotools.prototype.drawDots = function() {
         var pointCoords = d3.mouse(this);
         var xCenterPt = pointCoords[0];
         var yCenterPt = pointCoords[1];
-		
-        console.log('xCenterPt, yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
+        //console.log('xCenterPt, yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
         
         var svgCircle = circleGroup.append('circle')
             .attr('cx', xCenterPt)
@@ -118,7 +115,7 @@ annotools.prototype.drawDots = function() {
                         geoJSONs.splice(k,1);
                         break;
                     }
-			    }
+                }
                 /*
                 for (var l = 0; l < geoJSONs.length; l++) {
                     console.log('After break properties.circle_id: ' + geoJSONs[l].properties.circle_id);     
@@ -135,7 +132,6 @@ annotools.prototype.drawDots = function() {
             d3.selectAll('.dot').each( function(d, i) {
 			
                 var geoNewAnnot = {};
-		
                 var xCenterPtTmp = d3.select(this).attr('cx');
                 var yCenterPtTmp = d3.select(this).attr('cy');
                 var circleId = d3.select(this).attr('id');
@@ -155,7 +151,6 @@ annotools.prototype.drawDots = function() {
                     console.log('w and h: ' + w + ', ' + h);
                     console.log('xCenterPt and yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
 		
-             
                     var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y);
                     var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y);
                     var centerPtRelativeMousePosition = new OpenSeadragon.Point(xCenterPt, yCenterPt);
@@ -195,7 +190,7 @@ annotools.prototype.drawDots = function() {
                 geoJSONs.push(geoNewAnnot);
             }
 	   
-	        //console.log(geoJSONs);
+            //console.log(geoJSONs);
             for (var j = 0; j < circleRemoveIds.length; j++) {
                 for (var i = 0; i < geoJSONs.length; i++) {
                     if (geoJSONs[i].properties.circle_id == circleRemoveIds[j]) {
