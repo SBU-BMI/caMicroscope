@@ -6,9 +6,10 @@ annotools.prototype.drawDots = function() {
     var geoJSONs  = [];
     var circleRemoveIds = [];
     var radius  = 3;
-    var fillColor = '#ff2626';
-    var hoverRadius = 10;
-	
+    var radiusHover = radius * 3;
+    var fillColor = '#ff2626';  // red
+    var opacityDefault = 1;
+    var opacityHover = .5;
 	
     var markup_svg = document.getElementById('markups');
     
@@ -83,13 +84,20 @@ annotools.prototype.drawDots = function() {
         event.stopImmediatePropagation();
     });
     
+	
+    d3.selectAll('.annotationsvg').attr('r', radius).style('opacity', opacityHover).style('cursor', 'none');
+	
+    d3.selectAll('.annotationsvg').on('mouseover', function() {	
+        d3.selectAll(".annotationsvg").attr('r', radius).style('opacity', opacityHover).style('cursor', 'none');
+    });
+	
     // d3.js
     var svgHtmlDot = d3.select('svg');
     var viewPort =  d3.select('#viewport');
 	
     // group circle elements together
     var circleGroup = viewPort.append('g');
-    
+	
     //.on(action, fn) syntax for attaching an event listener to a DOM selection
     svgHtmlDot.on('click', function() {
         var creation = Date.now();    // the number of milliseconds since midnight January 1, 1970
@@ -109,11 +117,11 @@ annotools.prototype.drawDots = function() {
 		    .style('cursor', 'pointer')
             .attr('id', 'circle_' + creation)
             .attr('class', 'dot')
-		    .on("mouseover", function(d) {
-  	            d3.select(this).attr('r', hoverRadius).style('opacity', .5);
+		    .on('mouseover', function(d) {
+  	            d3.select(this).attr('r', radiusHover).style('opacity', opacityHover);
 	        })
-            .on("mouseout", function(d) {
-				d3.selectAll('circle').style('opacity', 1);
+            .on('mouseout', function(d) {
+				d3.selectAll('.dot').style('opacity', opacityDefault);
   	            d3.select(this).attr('r', radius).style('fill', fillColor);
 	        })
             .on('contextmenu', function (d, i) {
@@ -151,7 +159,22 @@ annotools.prototype.drawDots = function() {
             });
 		
 		
+		   
             //geoJSONs.length = 0;  //empty the geoJSONs array
+		    /*
+		    d3.selectAll('.annotationsvg').on('mouseover', function() {
+				
+				d3.selectAll(".annotationsvg").attr('r', radius).style('opacity', opacityHover).style('cursor', 'none');
+		    				    
+			});
+		
+		    d3.selectAll('.annotationsvg').on('mouseout', function() {
+				
+				d3.selectAll('.annotationsvg').attr('r', radius).style('opacity', opacityHover).style('cursor', 'none');
+		    				    
+			});
+			*/
+			
 		
             d3.selectAll('.dot').each( function(d, i) {
 			
