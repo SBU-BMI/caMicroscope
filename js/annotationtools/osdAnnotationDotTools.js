@@ -235,14 +235,13 @@ annotools.prototype.convertFromNativeCoord = function (annot, end) {
     return globalNumber;
 }
 
-
 annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools, ctx) {
     jQuery('#panel').show('slide');
     //console.log(newAnnots);
     jQuery('panel').html('');
     jQuery('#panel').html('' +
-    "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
-    + "<div id='panelBody'>"
+    "<div id = 'panelHeader' style='background: #0073e6; border-radius: 5px;'><h4>Enter a new annotation</h4></div>"
+    + "<div id='panelBody' style='background: #003366;'>"
     + "<form id ='annotationsForm' action='#'>"
     + '</form>'
 
