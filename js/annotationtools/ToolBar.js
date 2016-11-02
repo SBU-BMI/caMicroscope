@@ -280,7 +280,7 @@ ToolBar.prototype.createButtons = function () {
     this.dotToolButton = jQuery('<img>', {
         'title': 'Dot Tool',
         'class': 'toolButton inactive',
-        'src': 'images/analyze.png',
+        'src': 'images/color.svg',
         'id': 'drawDotButton'
     });
     tool.append(this.dotToolButton); // Dot Tool
