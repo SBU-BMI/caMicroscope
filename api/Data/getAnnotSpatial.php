@@ -62,7 +62,7 @@ switch ($_SERVER['REQUEST_METHOD'])
 
     $secrets = array(
       "human1" => "humantest", // secret => username
-      "human2" => "dotnuclei",
+      "dotnuclei1" => "dotnuclei",
       "prod1" => "humanProd"
     );
 
