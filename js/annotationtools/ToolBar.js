@@ -284,8 +284,13 @@ ToolBar.prototype.createButtons = function () {
         'id': 'drawDotButton'
     });
     tool.append(this.dotToolButton); // Dot Tool
+	  
+    this.spacer1 = jQuery('<img>', {
+      'class': 'spacerButton inactive',
+      'src': 'images/spacer.svg'
+    });
+    tool.append(this.spacer1);
 	
-   
     /*
      * Event handlers on click for the buttons
      */
