@@ -278,7 +278,7 @@ ToolBar.prototype.createButtons = function () {
     tool.append(this.spacer1);
     
     this.dotToolButton = jQuery('<img>', {
-        'title': 'Dot Tool',
+        'title': 'Dot Spatial Annotation Tool',
         'class': 'toolButton inactive',
         'src': 'images/color.svg',
         'id': 'drawDotButton'
