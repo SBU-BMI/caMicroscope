@@ -294,7 +294,7 @@ annotools.prototype.generateSVG = function (annotations) {
 	  
       // circle
       var geometryType = annotation.geometry.type;
-      if ( algorithm_id === 'dotnuclei' && geometryType === 'Point') {
+      if (geometryType === 'Point') {
 		  
          svgHtml += self.generateCircleSVG(id, nativepoints, self);
       }
