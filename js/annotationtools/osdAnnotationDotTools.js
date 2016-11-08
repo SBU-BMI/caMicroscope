@@ -34,7 +34,7 @@ annotools.prototype.drawDots = function() {
         }
     
         /* svgHtml */
-        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 1px solid #ffff00">';
+        var svgHtml = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + 'px" height="' + height + 'px" version="1.1" id="markups" style="border: 0px solid #ffff00">';
         svgHtml += '<g id="groupcenter"/>';
         svgHtml += '<g id="origin">';
         var origin = viewer.viewport.pixelFromPoint(new OpenSeadragon.Point(.5, .5));
@@ -296,11 +296,11 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
 
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
-		var errorSecretMsg = 'Wrong secret.';
-		if ( val.secret !== 'dot1' ) {
-			alert(errorSecretMsg);
-			return;
-		}
+        var errorSecretMsg = 'Wrong secret.';
+        if ( val.secret !== 'dot1' ) {
+            alert(errorSecretMsg);
+            return;
+        }
         var count = 1;
         for( var i = 0; i < newAnnots.length; i++ ) 
         { //for loop start
