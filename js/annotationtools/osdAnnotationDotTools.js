@@ -256,23 +256,42 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
     var formSchema = {
         'schema': schema,
         'form': [
-        '*',
-        {
-          'type': 'submit',
-          'title': 'Submit'
-
+            {
+                "key": "region",
+                "type": "radios"
+            },
+            {
+                "type": "fieldset",
+                "title": "*",
+                "expandable": true,
+                "items": [
+                    "additional_annotation",
+                    "additional_notes"
+                 ]
+             },
+             {
+                 "key": "secret",
+                 "type": "password",
+             },
+             {
+                 'type': 'submit',
+                 'title': 'Submit'
+             },
+             {
+                 'type': 'button',
+                 'title': 'Cancel',
+                 'onClick': function (e) {
+                 //console.log(e);
+                     e.preventDefault();
+                     // console.log("cancel")
+                     cancelAnnotation();
+                  }
+              }
+        ],
+        "params": {
+            "fieldHtmlClass": "input-small"
         },
-        {
-          'type': 'button',
-          'title': 'Cancel',
-          'onClick': function (e) {
-            //console.log(e);
-            e.preventDefault();
-            // console.log("cancel")
-            cancelAnnotation();
-          }
-        }
-      ]
+		"value": {"region": "Lymphocyte"}	
     }
 
     formSchema.onSubmit = function (err, val) {
