@@ -30,7 +30,7 @@ return array(
     'algorithmsForImage' => "$analysisMetaDataUrl/query/AlgorithmsForIID?",
     'deleteAnnotation' => "$markupUrl/delete/DeleteByOID",
     'postAlgorithmForImage' => "$analysisMetaDataUrl/submit/json?",
-    'getMultipleAnnotations' => "$markupUrl/query/getMultipleMarkups?",
+    'getMultipleAnnotations' => "$markupUrl/query/getMultipleMarkupsWithMetrics?",
     'getPropertiesForMarkup' => "$markupUrl/query/getPropertiesForMarkup?",
     'getFileLocation' => "$imageUrl/query/getFileLocationForIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPForIID?api_key=",

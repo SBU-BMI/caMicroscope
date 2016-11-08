@@ -11,35 +11,35 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
         'parent_id': 'self',
         'randval': Math.random(),
         'geometry': {
-        'type': 'Point',
-        'coordinates': []
-    },
-    'normalized': true,
-    'object_type': 'nucleus',
-    'properties': {
-        'scalar_features': [],
-        'annotations': [],
-        'bbox': [],
-        'radius': 3,
-        'fill_color': '#ffff00',
-        'circle_id': "",
-        'polygon_object_ids': []
-    },
-    'footprint': 10000,
-    'provenance': {
-        'analysis': {
-            'execution_id': 'dotnuclei',
-            'study_id': "",
-            'source': 'human',
-            'computation': 'detection'
+            'type': 'Point',
+            'coordinates': []
         },
-        'image': {
-            'case_id': case_id,
-            'subject_id': subject_id
-        }
-    },
-    'date': Date.now()
-  }
+        'normalized': true,
+        'object_type': 'nucleus',
+        'properties': {
+            'scalar_features': [],
+            'annotations': [],
+            'bbox': [],
+            'radius': 3,
+            'fill_color': '#ffff00',
+            'circle_id': "",
+            'polygon_object_ids': []
+        },
+        'footprint': 10000,
+        'provenance': {
+            'analysis': {
+                'execution_id': 'dotnuclei',
+                'study_id': "",
+                'source': 'human',
+                'computation': 'detection'
+            },
+            'image': {
+                'case_id': case_id,
+                'subject_id': subject_id
+            }
+        },
+        'date': Date.now()
+    }
   
   console.log(geoJSONTemplateTypePoint);
   return geoJSONTemplateTypePoint;
@@ -108,6 +108,74 @@ annotools.prototype.displayGeoPointAnnots = function () {
     var renderEndTime = 23;
 }
 */
+
+annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotationId, annotools) {
+
+    var svgHtml;
+    var id = annotationId;
+    var nativepoints = annotation.geometry.coordinates[0];
+	
+    //var response = annotools.getProperties(annotationId);
+    //var result = JSON.parse(response.responseText);
+    var currentRadius = annotation.properties.radius;
+    var hoverRadius = currentRadius * 3;
+    var fillColor = annotation.properties.fill_color;
+    var hoverColor = annotation.properties.fill_color;
+    var region = annotation.properties.annotations.region;
+    var additionalAnnotation = annotation.properties.annotations.additional_annotation;
+    var additionalNotes = annotation.properties.annotations.additional_notes;
+    var lymphocyteRegion = 'Lymphocyte';
+	
+    var text = region;
+    var opacityOver = '0.5';
+    var opacityOut = '1';
+
+    if (region === lymphocyteRegion) {
+        fillColor = 'lime';
+        hoverColor = 'lime';
+    }
+	
+    if (currentRadius === undefined) {
+        currentRadius = 3;
+    }
+	
+    if (fillColor === undefined) {
+        fillColor = '#ffff00';
+        hoverColor = '#ffff00';
+    }
+	
+    if (text) {
+	
+        if (additionalAnnotation) {
+            text += '\n';
+            text += additionalAnnotation;
+        }
+		
+        if (additionalNotes) {
+            text += '\n';
+            text += additionalNotes;
+        }	
+    }
+    
+    for (var k = 0; k < nativepoints.length; k++) {
+
+        var cx = this.imagingHelper.logicalToPhysicalX(nativepoints[k][0]);
+        var cy = this.imagingHelper.logicalToPhysicalY(nativepoints[k][1]);
+				
+        svgHtml += '<circle  class="annotationsvg" id="' + id + '" ';
+        svgHtml += 'cx="' + cx + '" cy="' + cy + '" r="' + currentRadius + '" fill="' + fillColor + '" ';
+        svgHtml += 'onmouseover = "evt.target.setAttribute(\'r\',' + hoverRadius + ');';
+        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + hoverColor + '\');'; 
+        svgHtml += 'evt.target.setAttribute(\'opacity\',\'' + opacityOver + '\'); "';
+        svgHtml += 'onmouseout = "evt.target.setAttribute(\'r\',' + currentRadius + ');';
+        svgHtml += 'evt.target.setAttribute(\'fill\',\'' + fillColor + '\');'; 
+        svgHtml += 'evt.target.setAttribute(\'opacity\',\'' + opacityOut + '\'); "';
+        svgHtml += '><title>' + text + '</title></circle>';
+	}
+	
+    return svgHtml;
+}
+
 
 annotools.prototype.generateCircleSVG = function(annotationId, nativepoints, annotools) {
 

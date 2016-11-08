@@ -296,7 +296,7 @@ annotools.prototype.generateSVG = function (annotations) {
       var geometryType = annotation.geometry.type;
       if (geometryType === 'Point') {
 		  
-         svgHtml += self.generateCircleSVG(id, nativepoints, self);
+         svgHtml += self.generateCircleSVGByAnnotation(annotation, id, self);
       }
       else {
 
