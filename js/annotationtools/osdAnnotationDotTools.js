@@ -271,7 +271,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
              },
              {
                  "key": "secret",
-                 "type": "password",
+                 "type": "password"
              },
              {
                  'type': 'submit',
@@ -296,6 +296,11 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
 
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
+		var errorSecretMsg = 'Wrong secret.';
+		if ( val.secret !== 'dot1' ) {
+			alert(errorSecretMsg);
+			return;
+		}
         var count = 1;
         for( var i = 0; i < newAnnots.length; i++ ) 
         { //for loop start
