@@ -68,6 +68,9 @@ annotools.prototype.drawDots = function() {
     d3.selectAll('.annotationsvg').on('mouseover', function() {	
         d3.selectAll(".annotationsvg").attr('r', radius).style('opacity', opacityHover).style('cursor', 'crosshair');
     });
+    
+    // show panel
+    self.promptForAnnotations(geoJSONs, 'new', self, null);
 	
     // d3.js
     var svgHtmlDot = d3.select('svg');
@@ -200,7 +203,7 @@ annotools.prototype.drawDots = function() {
 			
              }); //end for each
 		
-             self.promptForAnnotations(geoJSONs, 'new', self, null);
+             //self.promptForAnnotations(geoJSONs, 'new', self, null);
 		
              // jQuery("svg").css("cursor", "default");
              jQuery("#drawDotButton").removeClass("active");
