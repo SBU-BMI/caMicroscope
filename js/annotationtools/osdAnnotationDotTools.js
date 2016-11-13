@@ -3,12 +3,26 @@ annotools.prototype.drawDots = function() {
     var self = this;
     var geoJSONs  = [];
     var circleRemoveIds = [];
-    var radius  = 3;
-    var radiusHover = radius * 3;
-    var fillColor = '#ff2626';  // red
-    var opacityDefault = 1;
-    var opacityHover = .5;
-	
+    
+    var circleParameters = {
+        radius: 3,
+        fillColorDefault: '#ff2626',
+        opacityDefault: 1,
+        opacityHover: .5,
+        text: ''
+    }
+    
+    var radiusHover = circleParameters.radius * 3;
+    
+    var regionInfo = {
+        fillColorLymphocyte: 'lime',
+        fillColorNonLymphocyte: '#ffff00',
+        regionLymphocyte: 'Lymphocyte',
+        regionNonLymphocyte: 'Non Lymphocyte'
+    };
+    
+    var msgDeleteDot = '\nRight click to delete';
+    
     var markup_svg = document.getElementById('markups');
     
     if (!markup_svg)
@@ -63,15 +77,15 @@ annotools.prototype.drawDots = function() {
         event.stopImmediatePropagation();
     });
     
-    d3.selectAll('.annotationsvg').attr('r', radius).style('opacity', opacityHover).style('cursor', 'crosshair');
+    d3.selectAll('.annotationsvg').attr('r', circleParameters.radius).style('opacity', circleParameters.opacityHover).style('cursor', 'crosshair');
 	
     d3.selectAll('.annotationsvg').on('mouseover', function() {	
-        d3.selectAll(".annotationsvg").attr('r', radius).style('opacity', opacityHover).style('cursor', 'crosshair');
+        d3.selectAll(".annotationsvg").attr('r', circleParameters.radius).style('opacity', circleParameters.opacityHover).style('cursor', 'crosshair');
     });
     
     // show panel
-    self.promptForAnnotations(geoJSONs, 'new', self, null);
-	
+    self.promptForAnnotations(geoJSONs, 'new', self, regionInfo);
+    
     // d3.js
     var svgHtmlDot = d3.select('svg');
     var viewPort =  d3.select('#viewport');
@@ -86,21 +100,40 @@ annotools.prototype.drawDots = function() {
         var xCenterPt = pointCoords[0];
         var yCenterPt = pointCoords[1];
         //console.log('xCenterPt, yCenterPt: ' + xCenterPt + ' ' + yCenterPt);
-        
         var svgCircle = circleGroup.append('circle')
             .attr('cx', xCenterPt)
             .attr('cy', yCenterPt)
-            .attr('r', radius)
-            .style('fill', fillColor)
+            .attr('r', circleParameters.radius)
+            .style('fill', function(d) {
+                    var region;
+                    var radios = document.getElementsByTagName('input');
+                
+                    for (var i = 0; i < radios.length; i++) {
+                        if (radios[i].type === 'radio' && radios[i].checked) {
+                            // get value, set checked flag 
+                            region = radios[i].value;
+                            if (region === regionInfo.regionLymphocyte) {
+                                fillColor = regionInfo.fillColorLymphocyte;
+                                circleParameters.text = regionInfo.regionLymphocyte;
+                            }
+                            else {
+                                fillColor = regionInfo.fillColorNonLymphocyte;
+                                circleParameters.text = regionInfo.regionNonLymphocyte;
+                            }       
+                        }
+                    }
+                    d3.select(this).attr('fill', fillColor); 
+                    d3.select(this).append('title').text(circleParameters.text + msgDeleteDot);
+            })
             .style('cursor', 'pointer')
             .attr('id', 'circle_' + creation)
             .attr('class', 'dot')
             .on('mouseover', function(d) {
-                d3.select(this).attr('r', radiusHover).style('opacity', opacityHover);
+                d3.select(this).attr('r', radiusHover).style('opacity', circleParameters.opacityHover);
             })
             .on('mouseout', function(d) {
-                d3.selectAll('.dot').style('opacity', opacityDefault);
-                d3.select(this).attr('r', radius).style('fill', fillColor);
+                d3.selectAll('.dot').style('opacity', circleParameters.opacityDefault);
+                d3.select(this).attr('r', circleParameters.radius);
             })
             .on('contextmenu', function (d, i) {
                 d3.event.preventDefault();
@@ -125,27 +158,23 @@ annotools.prototype.drawDots = function() {
                 */       
             });
         
-            var svgTooltip = svgCircle.append('title')    // tooltip - circle x, y
-                .text(function() {
-                    return Math.round(xCenterPt) + ', ' + Math.round(yCenterPt);	  
-            });
-	
-	    
+        
             d3.selectAll('.dot').each( function(d, i) {
 			
                 var geoNewAnnot = {};
                 var xCenterPtTmp = d3.select(this).attr('cx');
                 var yCenterPtTmp = d3.select(this).attr('cy');
                 var circleId = d3.select(this).attr('id');
+                var fillColor = d3.select(this).attr('fill');
 			
                 if ( xCenterPtTmp == xCenterPt && yCenterPtTmp == yCenterPt ) {
 				
                     // coord start
                     var min_x, min_y, max_x, max_y, w, h;
-                    min_x = xCenterPt - radius;
-                    min_y = yCenterPt - radius;
-                    max_x = xCenterPt + radius;
-                    max_y = yCenterPt + radius;
+                    min_x = xCenterPt - circleParameters.radius;
+                    min_y = yCenterPt - circleParameters.radius;
+                    max_x = xCenterPt + circleParameters.radius;
+                    max_y = yCenterPt + circleParameters.radius;
                     w = Math.abs(max_x - min_x);
                     h = Math.abs(max_y - min_y);
                     console.log('min: ' + min_x + ', ' + min_y);
@@ -165,7 +194,7 @@ annotools.prototype.drawDots = function() {
                         cy: centerPtRelativeMousePosition.y,
                         type: 'circle',
                         circleId: circleId,
-                        color: this.color,
+                        fillColor: fillColor,
                         loc: []
                      }
                     // console.log('New annot: ' + JSON.stringify(newAnnot, null, 4));
@@ -238,7 +267,7 @@ annotools.prototype.convertFromNativeCoord = function (annot, end) {
     return globalNumber;
 }
 
-annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools, ctx) {
+annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools, regionInfo) {
     jQuery('#panel').show('slide');
     //console.log(newAnnots);
     jQuery('panel').html('');
@@ -260,21 +289,21 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
         'schema': schema,
         'form': [
             {
-                "key": "region",
-                "type": "radios"
+                'key': 'region',
+                'type': 'radios'
             },
             {
-                "type": "fieldset",
-                "title": "*",
-                "expandable": true,
-                "items": [
-                    "additional_annotation",
-                    "additional_notes"
+                'type': 'fieldset',
+                'title': 'Additional Options',
+                'expandable': true,
+                'items': [
+                    'additional_annotation',
+                    'additional_notes'
                  ]
              },
              {
-                 "key": "secret",
-                 "type": "password"
+                 'key': 'secret',
+                 'type': 'password'
              },
              {
                  'type': 'submit',
@@ -296,11 +325,12 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
         },
 		"value": {"region": "Lymphocyte"}	
     }
-
+    
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
-        var errorSecretMsg = 'Wrong secret.';
-        if ( val.secret !== 'dot1' ) {
+        var secretDot = 'dot1';
+        var errorSecretMsg = 'Error saving markup! Wrong secret';
+        if ( val.secret !== secretDot ) {
             alert(errorSecretMsg);
             return;
         }
@@ -309,7 +339,15 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
         { //for loop start
             var annotation = newAnnots[i];
             annotation.properties.annotations = val;
-
+            
+            if (annotation.properties.fill_color === regionInfo.fillColorLymphocyte) {
+                annotation.properties.annotations.region = regionInfo.regionLymphocyte;
+            }
+            
+            if (annotation.properties.fill_color === regionInfo.fillColorNonLymphocyte) {
+                annotation.properties.annotations.region = regionInfo.regionNonLymphocyte;
+            }
+            
             // Post annotation
             // annotools.addnewAnnot(annotation)
             // POST start
@@ -325,7 +363,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
                     //console.log(res);
                     if ( count === newAnnots.length ){
                         if(res == "unauthorized"){
-                            alert("Error saving markup! Wrong secret");
+                            alert(errorSecretMsg);
                         } else {   
                             alert("Successfully saved markup!");
                         }
@@ -368,5 +406,10 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
     }
 
     jQuery('#annotationsForm').jsonForm(formSchema);
+        
+    jQuery('legend').css({'color':'white', 'font-size': '10pt', 'cursor': 'pointer'});
+    jQuery( "#annotationsForm span:not(:contains('Non'))" ).css('color', regionInfo.fillColorLymphocyte);
+    jQuery( "#annotationsForm span:contains('Non')" ).css('color', regionInfo.fillColorNonLymphocyte);
+    //jQuery('#annotationsForm button').css('background', 'red');
   })
 }

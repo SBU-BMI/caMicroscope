@@ -86,6 +86,7 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
     geoAnnot.properties.bbox = bbox;
     //geoAnnot.properties.radius = radius;
     geoAnnot.properties.circle_id = annotation.circleId;
+    geoAnnot.properties.fill_color = annotation.fillColor;
     
     //geoAnnot.footprint = area;
     geoAnnot.geometry.coordinates = coordinates;
@@ -93,21 +94,6 @@ annotools.prototype.convertCircleToGeo = function (annotation) {
     return geoAnnot;
 }
 
-/*
-annotools.prototype.generatePointSVG = function (annotations) {
-
-}
-
-annotools.prototype.displayGeoPointAnnots = function () {
-	
-	var geoJSONs = this.annotations;
-	
-    this.generatePointSVG(geoJSONs);
-    
-    var renderStartTime = 9;
-    var renderEndTime = 23;
-}
-*/
 
 annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotationId, annotools) {
 
@@ -124,17 +110,11 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
     var region = annotation.properties.annotations.region;
     var additionalAnnotation = annotation.properties.annotations.additional_annotation;
     var additionalNotes = annotation.properties.annotations.additional_notes;
-    var lymphocyteRegion = 'Lymphocyte';
-	
+   
     var text = region;
     var opacityOver = '0.5';
     var opacityOut = '1';
 
-    if (region === lymphocyteRegion) {
-        fillColor = 'lime';
-        hoverColor = 'lime';
-    }
-	
     if (currentRadius === undefined) {
         currentRadius = 3;
     }
