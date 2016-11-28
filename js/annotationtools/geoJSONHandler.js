@@ -332,8 +332,20 @@ annotools.prototype.generateSVG = function (annotations) {
       html: svgHtml
     }).inject(container)
   }
+	
+  d3.selection.prototype.moveToBack = function() {  
+      return this.each(function() { 
+          var firstChild = this.parentNode.firstChild; 
+          if (firstChild) { 
+              this.parentNode.insertBefore(this, firstChild); 
+          } 
+      });
+  };
 
-
+  var polygon = d3.selectAll("polygon")
+      .on("mouseover",function(){
+          d3.select(this).moveToBack();
+  });
 
   var ctrl = false;
   jQuery(document).keydown(function(event){
