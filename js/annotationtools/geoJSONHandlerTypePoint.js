@@ -103,6 +103,33 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
 	
     //var response = annotools.getProperties(annotationId);
     //var result = JSON.parse(response.responseText);
+	//osprey start
+	var response = annotools.getProperties(annotationId);
+    var result = JSON.parse(response.responseText);
+    var currentRadius = result[0].properties.radius;
+    var hoverRadius = currentRadius * 3;
+    var fillColor = result[0].properties.fill_color;
+    var hoverColor = result[0].properties.fill_color;
+    var region = result[0].properties.annotations.region;
+    var additionalAnnotation = result[0].properties.annotations.additional_annotation;
+    var additionalNotes = result[0].properties.annotations.additional_notes;
+    //var lymphocyteRegion = 'Lymphocyte';
+	
+    var text = region;
+    var opacityOver = '0.5';
+    var opacityOut = '1';
+
+    /*
+    console.log(JSON.stringify(result, null, 4));
+	console.log(result[0].properties.annotations.region);
+	console.log(result[0].properties.annotations.additional_annotation);
+	console.log(result[0].properties.annotations.additional_notes);
+	console.log(result[0].properties.radius);
+	console.log(result[0].properties.fill_color);
+    */
+	//osprey end
+	
+	/*
     var currentRadius = annotation.properties.radius;
     var hoverRadius = currentRadius * 3;
     var fillColor = annotation.properties.fill_color;
@@ -114,6 +141,7 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
     var text = region;
     var opacityOver = '0.5';
     var opacityOut = '1';
+	*/
 
     if (currentRadius === undefined) {
         currentRadius = 3;

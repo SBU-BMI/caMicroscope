@@ -6,7 +6,8 @@ $cancerType = $_SESSION["cancerType"];
 //echo $cancerType;
 
 ///new
-$baseUrl = "http://localhost:9099";
+//$baseUrl = "http://localhost:9099";
+$baseUrl = "http://172.17.0.1:9099";
 $serviceUrl = "$baseUrl/services/" . $cancerType;
 $templateUrl = "$baseUrl/services/caMicroscope_Templates";
 
@@ -30,7 +31,7 @@ return array(
     'algorithmsForImage' => "$analysisMetaDataUrl/query/AlgorithmsForIID?",
     'deleteAnnotation' => "$markupUrl/delete/DeleteByOID",
     'postAlgorithmForImage' => "$analysisMetaDataUrl/submit/json?",
-    'getMultipleAnnotations' => "$markupUrl/query/getMultipleMarkupsWithMetrics?",
+    'getMultipleAnnotations' => "$markupUrl/query/getMultipleMarkups?",
     'getPropertiesForMarkup' => "$markupUrl/query/getPropertiesForMarkup?",
     'getFileLocation' => "$imageUrl/query/getFileLocationForIID?api_key=",
     'getMPP' => "$imageUrl/query/getMPPForIID?api_key=",
