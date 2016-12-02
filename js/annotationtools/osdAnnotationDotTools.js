@@ -413,3 +413,149 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
     //jQuery('#annotationsForm button').css('background', 'red');
   })
 }
+
+
+annotools.prototype.drawRectDotMarkup = function (ctx) {
+  console.log('drawing rectangle - dot markups')
+
+  /*Highlight drawRectangle button and change cursor*/
+
+  this.removeMouseEvents()
+  var started = false
+  var min_x,min_y,max_x,max_y,w,h
+  var startPosition
+  this.drawCanvas.addEvent('mousedown', function (e) {
+    started = true
+    startPosition = OpenSeadragon.getMousePosition(e.event)
+    x = startPosition.x
+    y = startPosition.y
+  })
+
+  this.drawCanvas.addEvent('mousemove', function (e) {
+    if (started) {
+      ctx.clearRect(0, 0, this.drawCanvas.width, this.drawCanvas.height)
+      var currentMousePosition = OpenSeadragon.getMousePosition(e.event)
+
+      min_x = Math.min(currentMousePosition.x, startPosition.x)
+      min_y = Math.min(currentMousePosition.y, startPosition.y)
+      max_x = Math.max(currentMousePosition.x, startPosition.x)
+      max_y = Math.max(currentMousePosition.y, startPosition.y)
+      w = Math.abs(max_x - min_x)
+      h = Math.abs(max_y - min_y)
+      ctx.strokeStyle = this.color
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'
+      ctx.fillRect(min_x, min_y, w, h)
+      ctx.strokeRect(min_x, min_y, w, h)
+    }
+  }.bind(this))
+
+  this.drawCanvas.addEvent('mouseup', function (e) {
+    started = false
+    var finalMousePosition = new OpenSeadragon.getMousePosition(e.event)
+
+    min_x = Math.min(finalMousePosition.x, startPosition.x)
+    min_y = Math.min(finalMousePosition.y, startPosition.y)
+    max_x = Math.max(finalMousePosition.x, startPosition.x)
+    max_y = Math.max(finalMousePosition.y, startPosition.y)
+
+    var startRelativeMousePosition = new OpenSeadragon.Point(min_x, min_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+    var endRelativeMousePosition = new OpenSeadragon.Point(max_x, max_y).minus(OpenSeadragon.getElementOffset(viewer.canvas))
+    var newAnnot = {
+      x: startRelativeMousePosition.x,
+      y: startRelativeMousePosition.y,
+      w: w,
+      h: h,
+      type: 'rect',
+      color: this.color,
+      loc: []
+    }
+
+    var globalNumbers = JSON.parse(this.convertFromNative(newAnnot, endRelativeMousePosition))
+
+    newAnnot.x = globalNumbers.nativeX
+    newAnnot.y = globalNumbers.nativeY
+    newAnnot.w = globalNumbers.nativeW
+    newAnnot.h = globalNumbers.nativeH
+    var loc = []
+    loc[0] = parseFloat(newAnnot.x)
+    loc[1] = parseFloat(newAnnot.y)
+    newAnnot.loc = loc;
+
+    console.log(newAnnot);
+
+    // convert to geojson 
+    var geoNewAnnot = this.convertRectToGeo(newAnnot)
+    // geoNewAnnot = newAnnot
+    this.promptForRectDotAnnotation(geoNewAnnot, 'new', this, ctx);
+    jQuery("canvas").css("cursor", "default");
+    jQuery("#markupRectDotButton").removeClass("active");
+
+
+  }.bind(this))
+}
+
+annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annotools, ctx) {
+  jQuery('#panel').show('slide')
+  console.log(newAnnot);
+  jQuery('panel').html('');
+  jQuery('#panel').html('' +
+    "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
+    + "<div id='panelBody'>"
+    + "<form id ='annotationsForm' action='#'>"
+    + '</form>'
+
+    + '</div>'
+  )
+  jQuery.get('api/Data/retrieveTemplate.php', function (data) {
+    console.log(data);
+    var schema = JSON.parse(data)
+    schema = JSON.parse(schema)[0]
+    console.log(schema)
+    // console.log("retrieved template")
+    var formSchema = {
+      'schema': schema,
+      'form': [
+        '*',
+        {
+          'type': 'submit',
+          'title': 'Submit'
+
+        },
+        {
+          'type': 'button',
+          'title': 'Cancel',
+          'onClick': function (e) {
+            console.log(e)
+            e.preventDefault()
+            // console.log("cancel")
+            cancelAnnotation()
+          }
+        }
+      ]
+    }
+
+    formSchema.onSubmit = function (err, val) {
+      // Add form data to annotation
+      newAnnot.properties.annotations = val
+
+      // Post annotation
+      annotools.addnewAnnot(newAnnot)
+	  
+      // Hide Panel
+      jQuery('#panel').hide('slide')
+      annotools.drawLayer.hide()
+      annotools.addMouseEvents()
+
+      return false
+    }
+
+    var cancelAnnotation = function () {
+      console.log('cancel handler')
+      jQuery('#panel').hide('slide')
+      annotools.drawLayer.hide()
+      annotools.addMouseEvents()
+    }
+
+    jQuery('#annotationsForm').jsonForm(formSchema)
+  })
+}

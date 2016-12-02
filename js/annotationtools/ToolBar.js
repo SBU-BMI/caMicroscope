@@ -285,6 +285,14 @@ ToolBar.prototype.createButtons = function () {
     });
     tool.append(this.dotToolButton); // Dot Tool
 	  
+    this.rectDotMarkupButton = jQuery('<img>', {
+        'title': 'Rectangle Markup for Dot Tool',
+        'class': 'toolButton inactive',
+        'src': 'images/rect.svg',
+        'id': 'markupRectDotButton'
+    });
+    tool.append(this.rectDotMarkupButton); 
+	  
     this.spacer1 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
@@ -308,6 +316,7 @@ ToolBar.prototype.createButtons = function () {
         //console.log(jQuery("#drawRectangleButton")); 
         jQuery("#drawFreelineButton").removeClass("active");
         jQuery("#drawDotButton").removeClass("active");   // Dot Tool
+        jQuery('#markupRectDotButton').removeClass('active'); 
 
         //console.log("added class");     
       }
@@ -333,9 +342,27 @@ ToolBar.prototype.createButtons = function () {
             jQuery('svg').css('cursor', 'crosshair');
             jQuery('#drawRectangleButton').removeClass('active');
             jQuery('#drawFreelineButton').removeClass('active');
+            jQuery('#markupRectDotButton').removeClass('active'); 
             jQuery('#drawDotButton').addClass('active');
        }   
-    }.bind(this)); 
+    }.bind(this));
+	  
+   this.rectDotMarkupButton.on('click', function () {
+  
+      if(this.annotools.mode == 'rect_dot') {
+        this.setNormalMode();
+      } else {
+        this.mode = 'rect_dot';
+        this.annotools.mode = 'rect_dot';
+        this.annotools.drawMarkups();
+        jQuery("canvas").css("cursor", "crosshair");
+        jQuery("#drawRectangleButton").removeClass("active"); 
+        jQuery("#drawFreelineButton").removeClass("active");
+        jQuery("#drawDotButton").removeClass("active");   // Dot Tool
+        jQuery("#markupRectDotButton").addClass("active");     
+      }
+	   
+    }.bind(this))
       
 	  
     this.ellipsebutton.on('click', function () {
@@ -358,6 +385,7 @@ ToolBar.prototype.createButtons = function () {
         //jQuery("drawFreelineButton").css("opacity", 1);
         jQuery("#drawRectangleButton").removeClass("active");
         jQuery("#drawDotButton").removeClass("active");     // Dot Tool
+        jQuery('#markupRectDotButton').removeClass('active'); 
         jQuery("#drawFreelineButton").addClass("active");
 
       }

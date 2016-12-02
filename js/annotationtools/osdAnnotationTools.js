@@ -368,6 +368,9 @@ annotools.prototype.drawMarkups = function () // Draw Markups
       case 'measure':
         this.drawMeasure(ctx)
         break
+      case 'rect_dot':
+        this.drawRectDotMarkup(ctx)
+        break
     }
   } else this.showMessage('Container Not SET Correctly Or Not Fully Loaded Yet')
 }
