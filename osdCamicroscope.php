@@ -119,15 +119,22 @@
           var annotool = null;
           var tissueId = <?php echo json_encode($_GET['tissueId']); ?>;
 		
-		var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
-		console.log(cancerType);
+          var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
+          console.log(cancerType);
+			
+		  //authentication start (setauthentication.php)
+		  var sessionUserEmail = <?php echo '"' . $_SESSION['email'] . '"' ?>;
+		  var sessionUsername = sessionUserEmail.split("@", 1);
+		  
+		  console.log(sessionUsername);
+		  
           var imagedata = new OSDImageMetaData({imageId:tissueId});
           //console.log(tissueId);
           //console.log(imagedata);
           //console.log(tissueId);
           
           var MPP = imagedata.metaData[0];
-		console.log(MPP);
+		  console.log(MPP);
             //console.log(imagedata);
           var fileLocation = imagedata.metaData[1];//.replace("tcga_data","tcga_images");
           //console.log(fileLocation);
@@ -184,7 +191,8 @@ function isAnnotationActive(){
                 iid: tissueId, 
                 viewer: viewer,
                 annotationHandler: annotationHandler,
-                mpp:MPP
+                mpp:MPP,
+			    username: sessionUsername
             });
         //console.log(tissueId);
         var toolBar = new ToolBar('tool', {

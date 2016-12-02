@@ -302,10 +302,6 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
                  ]
              },
              {
-                 'key': 'secret',
-                 'type': 'password'
-             },
-             {
                  'type': 'submit',
                  'title': 'Submit'
              },
@@ -329,16 +325,20 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
         var secretDot = 'dot1';
+		/*
         var errorSecretMsg = 'Error saving markup! Wrong secret';
         if ( val.secret !== secretDot ) {
             alert(errorSecretMsg);
             return;
         }
+		*/
         var count = 1;
         for( var i = 0; i < newAnnots.length; i++ ) 
         { //for loop start
             var annotation = newAnnots[i];
             annotation.properties.annotations = val;
+			annotation.properties.annotations.secret = secretDot;
+			annotation.properties.annotations.username = this.username;
             
             if (annotation.properties.fill_color === regionInfo.fillColorLymphocyte) {
                 annotation.properties.annotations.region = regionInfo.regionLymphocyte;

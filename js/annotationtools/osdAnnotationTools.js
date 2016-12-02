@@ -25,6 +25,9 @@ var annotools = function (options) {
   this.iid = options.iid || null // The Image ID
   this.annotVisible = true // The Annotations are Set to be visible at the First Loading
   this.mode = 'default' // The Mode is Set to Default
+  
+  this.username = options.username;
+  console.log('annotools: ' + this.username);
 
   this.viewer = options.viewer
   this.imagingHelper = this.viewer.imagingHelper
