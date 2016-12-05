@@ -325,8 +325,9 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
         var secretDot = 'dot1';
+		
+        var errorUnauthorizedMsg = 'Error saving markup! You are not authorized to perform that operation';
 		/*
-        var errorSecretMsg = 'Error saving markup! Wrong secret';
         if ( val.secret !== secretDot ) {
             alert(errorSecretMsg);
             return;
@@ -338,7 +339,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
             var annotation = newAnnots[i];
             annotation.properties.annotations = val;
             annotation.properties.annotations.secret = secretDot;
-            annotation.properties.annotations.username = this.username;
+            annotation.properties.annotations.username = annotools.username;
             
             if (annotation.properties.fill_color === regionInfo.fillColorLymphocyte) {
                 annotation.properties.annotations.region = regionInfo.regionLymphocyte;
@@ -363,7 +364,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
                     //console.log(res);
                     if ( count === newAnnots.length ){
                         if(res == "unauthorized"){
-                            alert(errorSecretMsg);
+                            alert(errorUnauthorizedMsg);
                         } else {   
                             alert("Successfully saved markup!");
                         }
@@ -495,12 +496,14 @@ annotools.prototype.drawRectDotMarkup = function (ctx) {
 }
 
 annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annotools, ctx) {
+	
+	//console.log('username: ' + annotools.username);
     jQuery('#panel').show('slide');
     console.log(newAnnot);
     jQuery('panel').html('');
     jQuery('#panel').html('' +
-        "<div id = 'panelHeader'> <h4>Enter a new annotation </h4></div>"
-        + "<div id='panelBody'>"
+        "<div id = 'panelHeader' style='background: #0073e6; border-radius: 5px;'><h4>Save Rectangle Markup</h4></div>"
+        + "<div id='panelBody' style='background: #003366;'>"
         + "<form id ='annotationsForm' action='#'>"
         + '</form>'
         + '</div>'
@@ -514,7 +517,19 @@ annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annot
     var formSchema = {
         'schema': schema,
         'form': [
-            '*',
+            {
+                'key': 'region',
+                'type': 'radios'
+            },
+            {
+                'type': 'fieldset',
+                'title': 'Additional Options',
+                'expandable': true,
+                'items': [
+                    'additional_annotation',
+                    'additional_notes'
+                 ]
+            },
             {
                 'type': 'submit',
                 'title': 'Submit'
@@ -523,19 +538,26 @@ annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annot
                 'type': 'button',
                 'title': 'Cancel',
                 'onClick': function (e) {
-                     console.log(e);
-                     e.preventDefault();
-                     // console.log("cancel")
-                     cancelAnnotation();
+                    console.log(e);
+                    e.preventDefault();
+                    // console.log("cancel")
+                    cancelAnnotation();
                  }
              }
-         ]
+         ],
+		 "params": {
+            "fieldHtmlClass": "input-small"
+        }
     }
 	
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
+		var secretDot = 'dot1';
+		
         newAnnot.properties.annotations = val;
-
+        newAnnot.properties.annotations.secret = secretDot;
+        newAnnot.properties.annotations.username = annotools.username;
+		
         // Post annotation
         annotools.addnewAnnot(newAnnot);
 	  
@@ -555,6 +577,9 @@ annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annot
     }
 
     jQuery('#annotationsForm').jsonForm(formSchema);
+    jQuery('legend').css({'color':'white', 'font-size': '10pt', 'cursor': 'pointer'});
+    //jQuery( "#annotationsForm span:not(:contains('Non'))" ).css('color', regionInfo.fillColorLymphocyte);
+    //jQuery( "#annotationsForm span:contains('Non')" ).css('color', regionInfo.fillColorNonLymphocyte);
 		
   })
 }
