@@ -294,7 +294,9 @@ annotools.prototype.generateSVG = function (annotations) {
 	  
       // circle
       var geometryType = annotation.geometry.type;
-      if (geometryType === 'Point') {
+	  var objectType = annotation.object_type;
+		
+      if (geometryType === 'Point' ) {
 		  
          svgHtml += self.generateCircleSVGByAnnotation(annotation, id, self);
       }
@@ -313,7 +315,7 @@ annotools.prototype.generateSVG = function (annotations) {
             // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
             svgHtml += polyPixelX + ',' + polyPixelY + ' '
          }
-		 if (algorithm_id === 'dotnuclei') {
+		 if (algorithm_id === 'dotnuclei' || objectType === 'rectDot') {
 		    svgHtml += '" style="fill:transparent; stroke:aqua; stroke-width:3; stroke-dasharray: 8 4;"/>' 
 		 }
          else {
