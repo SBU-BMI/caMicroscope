@@ -442,7 +442,8 @@ annotools.prototype.drawRectDotMarkup = function (ctx) {
             max_y = Math.max(currentMousePosition.y, startPosition.y);
             w = Math.abs(max_x - min_x);
             h = Math.abs(max_y - min_y);
-            ctx.strokeStyle = this.color;
+            ctx.strokeStyle = 'aqua';
+            ctx.setLineDash([10,4]);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
             ctx.fillRect(min_x, min_y, w, h);
             ctx.strokeRect(min_x, min_y, w, h);
