@@ -104,6 +104,7 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
     //var response = annotools.getProperties(annotationId);
     //var result = JSON.parse(response.responseText);
 	//osprey start
+	/*
 	var response = annotools.getProperties(annotationId);
     var result = JSON.parse(response.responseText);
     var currentRadius = result[0].properties.radius;
@@ -118,7 +119,7 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
     var text = region;
     var opacityOver = '0.5';
     var opacityOut = '1';
-
+    */
     /*
     console.log(JSON.stringify(result, null, 4));
 	console.log(result[0].properties.annotations.region);
@@ -129,7 +130,7 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
     */
 	//osprey end
 	
-	/*
+	
     var currentRadius = annotation.properties.radius;
     var hoverRadius = currentRadius * 3;
     var fillColor = annotation.properties.fill_color;
@@ -141,7 +142,7 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
     var text = region;
     var opacityOver = '0.5';
     var opacityOut = '1';
-	*/
+	
 
     if (currentRadius === undefined) {
         currentRadius = 3;
