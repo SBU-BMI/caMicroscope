@@ -134,6 +134,7 @@ ToolBar.prototype.setNormalMode = function() {
   jQuery("#drawRectangleButton").removeClass('active');
   jQuery("#drawFreelineButton").removeClass('active');
   jQuery("#drawDotButton").removeClass("active");   // Dot Tool
+  jQuery("#markupRectDotButton").removeClass("active");
   this.annotools.drawLayer.hide()
   this.annotools.addMouseEvents()       
 }
