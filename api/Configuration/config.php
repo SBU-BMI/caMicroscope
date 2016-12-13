@@ -6,8 +6,8 @@ $cancerType = $_SESSION["cancerType"];
 //echo $cancerType;
 
 ///new
-//$baseUrl = "http://localhost:9099";
-$baseUrl = "http://172.17.0.1:9099";
+$baseUrl = "http://localhost:9099";
+//$baseUrl = "http://172.17.0.1:9099";
 $serviceUrl = "$baseUrl/services/" . $cancerType;
 $templateUrl = "$baseUrl/services/caMicroscope_Templates";
 
