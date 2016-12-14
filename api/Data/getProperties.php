@@ -59,10 +59,6 @@ switch ($_SERVER['REQUEST_METHOD'])
     $id = $data['id'];
     $secret = $data['secret'];
 
-
-
-
-
     //Check ID is human
     $getUrl  = $getUrl . "api_key=" . $api_key;
     $url = $getUrl . "&id=" . $id;
@@ -73,6 +69,12 @@ switch ($_SERVER['REQUEST_METHOD'])
     $annotation = $annotationList[0];
     $source = $annotation->provenance->analysis->source;
     $annot_secret = $annotation->properties->annotations->secret;
+	//dotTool
+	$annot_execution_id = $annotation->provenance->analysis->execution_id;
+	if (strpos($annot_execution_id, 'dotnuclei') === 0) {
+		$secret = $annot_secret;
+	}
+	
     if($source == "human"){
       if($secret == $annot_secret){
         echo "Source: ".$source;

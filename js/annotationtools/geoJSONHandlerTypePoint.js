@@ -280,3 +280,286 @@ annotools.prototype.getProperties = function (annotId) {
     });
 }
 
+annotools.prototype.deleteRectDotAnnot = function(annotation, annotId, annotools) {
+    
+    var isUsernameExist = annotation.properties.annotations.hasOwnProperty('username');
+    var dataUsername = [];
+    var isSuperuserExist = annotation.properties.annotations.hasOwnProperty('superuser');
+    var dataSuperuser = '';
+	var currentUsername = annotools.username;
+	
+	
+    if (isUsernameExist) {
+        dataUsername = annotation.properties.annotations.username[0];
+    }
+    if (isSuperuserExist) {
+        dataSuperuser = annotation.properties.annotations.superuser;
+    }
+	
+				
+    if ((dataUsername == currentUsername) || (dataSuperuser == currentUsername)) {
+       //alert('Authorized');
+       //confirm
+       var isConfirm = confirm("Are you sure you want to delete this dashed rectangle?\nOK or Cancel.");
+          if (isConfirm) {
+             var payload = {
+                 "id": annotId,
+                 "secret": ''
+              }
+              jQuery.ajax({
+                  url: 'api/Data/getProperties.php?id='+annotId,
+                  type: 'DELETE',
+                  data:(payload),
+                  success: function(data) {
+                      console.log(data);
+                      jQuery("#panel").hide("slide");
+                      annotools.getMultiAnnot();
+                   }
+               });
+            }
+            else {
+               jQuery("#panel").hide("slide");
+               annotools.getMultiAnnot();
+            }
+       }
+       else {
+           alert('Error deleting markup! You are not authorized to perform this operation');
+           jQuery("#panel").hide("slide");
+           annotools.getMultiAnnot();
+       }               
+}
+
+annotools.prototype.menageCircleAnnot = function(annotations, annotools) {
+    
+     var panel = jQuery('#panel').show('slide')
+        panel.html('');
+        jQuery(".annotationsvg").css("opacity", 0.5);
+        jQuery("#"+event.target.id).css("opacity", 1);
+        var id = event.target.id
+        var url = "api/Data/getProperties.php?id="+id;
+        var content = "<div id = 'panelHeader'> <h4>Annotation Details</h4></div>"
+        + "<div id='panelBody'>";
+    
+        console.log('length before function: ' + annotations.length);
+        
+        var annotations = this.annotations;
+        //var data = {};
+	    var annotation = {};
+    
+        if (annotations) {
+            for (var i = 0; i < annotations.length; i++) {
+                var annotOld = annotations[i];
+                var idOld = '';
+                var properties = {};
+                if (annotOld['_id']) {
+                    idOld = annotOld['_id']['$oid'];
+                }
+                if (idOld == id) {
+                    console.log('Equel: ' + id);
+                    annotation = annotOld;
+                    console.log(annotation);
+                    properties = annotation.properties.annotations;
+                    for (var i in properties) {
+                        if(i == "secret") {
+                        } else {
+                        var line = "<div class='markupProperty'><strong>"+i+"</strong>: " + properties[i]+"</div>";
+                        content+=line;
+                        }
+                     }
+                
+                 }       
+             }
+         }
+          
+         content += "<button class='btn' id='editDotAnnot'>Change</button>";
+         content += "<button class='btn-danger btn' id='deleteAnnot'>Delete</button>";
+         content += "<button class='btn' id='cancelPanel'>Cancel</button>";
+         content +="</div>";
+         var cancel = function () {
+           
+            jQuery('#panel').hide('slide');
+            annotools.getMultiAnnot();
+
+          }
+
+          panel.html(content);
+        
+
+          jQuery("#cancelPanel").click(function(){cancel();});
+          
+	      // start delete circle
+          jQuery("#deleteAnnot").click(function(e) {
+            
+             if(annotation.provenance.analysis.execution_id.startsWith('dotnuclei')) {
+			   alert ('startswith');
+	             var isUsernameExist = annotation.properties.annotations.hasOwnProperty('username');
+                 var annotUsername = [];
+                 var isSuperuserExist = annotation.properties.annotations.hasOwnProperty('superuser');
+                 var annotSuperuser = '';
+	             var currentUsername = annotools.username;
+	
+                 if (isUsernameExist) {
+                     annotUsername = annotation.properties.annotations.username[0];
+                 }
+                 if (isSuperuserExist) {
+                     annotSuperuser = annotation.properties.annotations.superuser;
+                 }
+				 console.log(isUsernameExist);
+				 console.log(typeof annotUsername);
+				 console.log(typeof currentUsername);
+				 console.log(typeof annotSuperuser);
+                 if ((annotUsername == currentUsername) || (annotSuperuser == currentUsername)) {
+			         //alert('Authorized');
+			         var payload = {
+                         "id": id,
+                         "secret": ''
+                     }
+				     jQuery.ajax({
+                         url: 'api/Data/getProperties.php?id='+id,
+                         type: 'DELETE',
+                         data:(payload),
+                         success: function(data){
+                             console.log(data);
+                             //jQuery("#panel").hide("slide");
+                             annotools.getMultiAnnot();
+                         }
+                     });
+				  }
+				  else {
+			        alert('HereError deleting markup! You are not authorized to perform this operation');
+				    jQuery("#panel").hide("slide");
+                    annotools.getMultiAnnot();
+			      }
+              } else {
+                  alert("Error deleting markup! You are not authorized to perform this operation");
+              }
+          }); //end delete circle
+          
+    
+          // start edit
+          jQuery("#editDotAnnot").click(function(e) { 
+            
+			  console.log('Edit Before post annotation:' + JSON.stringify(annotation, null, 4));
+			  // create geoJson
+			  
+			  // set values
+			  var geometryType = annotation.geometry.type;
+			  var cx = annotation.geometry.coordinates[0][0][0];
+			  var cy = annotation.geometry.coordinates[0][0][1];
+			  var objectType = annotation.object_type;
+			  var region = annotation.properties.annotations.region;
+			  var additionalAnnotation = annotation.properties.annotations.additional_annotation;
+			  var additionalNotes = annotation.properties.annotations.additional_notes;
+			  var secret = annotation.properties.annotations.secret;
+			  var username = annotools.username;
+			  var createdBy = annotation.properties.annotations.username;
+			  var updatedBy = annotools.username;
+			  var superuser = annotation.properties.annotations.superuser;
+			  var objectIdOld = id;
+			  var radius = annotation.properties.radius;
+			  var fillColor = annotation.properties.fill_color;
+			  var circleIdOld = annotation.properties.circle_id;
+			  var executionId = annotation.provenance.analysis.execution_id;
+			  var caseId = annotation.provenance.image.case_id;
+	
+              var subjectId = caseId.substr(0,12);
+              if(subjectId.substr(0,4) != 'TCGA'){
+                  subjectId = '';
+              }
+			  
+			  if (region === 'Lymphocyte') {
+				  region = 'Non Lymphocyte';
+				  fillColor = '#ffff00';
+			  }
+			  else if (region === 'Non Lymphocyte') {
+			      region = 'Lymphocyte';
+				  fillColor = 'Lime';
+			  }
+			  
+			  console.log(geometryType);
+			  console.log(cx);
+			  console.log(cy);
+			  console.log(objectType);
+			  console.log(region);
+			  console.log(additionalAnnotation);
+			  console.log(additionalNotes);
+			  console.log(secret);
+			  console.log(username);
+			  console.log(createdBy);
+			  console.log(updatedBy);
+			  console.log(superuser);
+			  console.log(objectIdOld);
+			  console.log(radius);
+			  console.log(fillColor);
+			  console.log(circleIdOld);
+			  console.log(executionId);
+			  console.log(caseId);
+			  console.log(subjectId);
+			  console.log(id);
+
+              var editAnnot = {
+                  'type': 'Feature',
+                  'parent_id': 'self',
+                  'randval': Math.random(),
+                  'geometry': {
+                      'type': geometryType,
+                      'coordinates': [
+	                      [
+                              [
+                                  cx,
+                                  cy
+                              ]
+                
+                           ]	  
+	                   ]
+                    },
+               'normalized': true,
+               'object_type': 'nucleus',
+               'properties': {
+                   'annotations': {
+                       'region' : region, 
+                       'additional_annotation' : additionalAnnotation, 
+                       'additional_notes' : additionalNotes, 
+                       'secret' : secret,
+				       'username': [
+                           username
+                        ],
+					    'created_by': createdBy,
+					    'updated_by': updatedBy,
+                        'superuser': superuser,
+					    'object_id_old': objectIdOld
+                     },
+				   'radius': radius,
+                   'fill_color': fillColor,
+                   'circle_id': circleIdOld,
+                },
+                'footprint': 10000,
+                'provenance': {
+                    'analysis': {
+                        'execution_id': executionId,
+                        'study_id': '',
+                        'source': 'human',
+                        'computation': 'detection'
+                        },
+                    'image': {
+                        'case_id': caseId,
+                        'subject_id': subjectId
+                     }
+                 },
+                 'date': Date.now(),
+	             x: cx,
+	             y: cy
+	
+             }
+  
+
+             console.log('Post editAnnot:' + JSON.stringify(editAnnot, null, 4));
+			  
+			 // Post annotation
+             annotools.addnewAnnot(editAnnot);
+	  
+			 console.log('Success edit');
+             
+          });
+          // end edit
+}

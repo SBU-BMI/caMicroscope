@@ -213,7 +213,7 @@ annotools.prototype.drawDots = function() {
                     console.log('New annot final: ' + JSON.stringify(newAnnot, null, 4));
 		
                     geoNewAnnot = self.convertCircleToGeo(newAnnot);
-                    //console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
+                    console.log('Geo new annot:' + JSON.stringify(geoNewAnnot, null, 4));
                 }   // end if
 			
                 if(Object.getOwnPropertyNames(geoNewAnnot).length !== 0) {
@@ -325,6 +325,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
         var secretDot = 'dot1';
+        var superUsername = 'Tianhao.Zhao';
 		
         var errorUnauthorizedMsg = 'Error saving markup! You are not authorized to perform that operation';
 		/*
@@ -340,6 +341,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
             annotation.properties.annotations = val;
             annotation.properties.annotations.secret = secretDot;
             annotation.properties.annotations.username = annotools.username;
+            annotation.properties.annotations.superuser = superUsername;
             
             if (annotation.properties.fill_color === regionInfo.fillColorLymphocyte) {
                 annotation.properties.annotations.region = regionInfo.regionLymphocyte;
@@ -355,6 +357,7 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
             var self = this;
             //console.log('Save annotation function');
             //console.log(annotation);
+			console.log('Before post annotation:' + JSON.stringify(annotation, null, 4));
             jQuery.ajax({
                 'type': 'POST',
                 url: 'api/Data/getAnnotSpatial.php',
@@ -554,10 +557,13 @@ annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annot
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
 		var secretDot = 'dot1';
+        var superUsername = 'Tianhao.Zhao';
 		
         newAnnot.properties.annotations = val;
         newAnnot.properties.annotations.secret = secretDot;
         newAnnot.properties.annotations.username = annotools.username;
+        newAnnot.properties.annotations.superuser = superUsername;
+        
 		
         // Post annotation
         annotools.addnewAnnot(newAnnot);

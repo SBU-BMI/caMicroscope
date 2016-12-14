@@ -296,7 +296,7 @@ annotools.prototype.generateSVG = function (annotations) {
       var geometryType = annotation.geometry.type;
 	  var objectType = annotation.object_type;
 		
-      if (geometryType === 'Point' ) {
+      if ( geometryType === 'Point' ) {
 		  
          svgHtml += self.generateCircleSVGByAnnotation(annotation, id, self);
       }
@@ -315,7 +315,7 @@ annotools.prototype.generateSVG = function (annotations) {
             // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
             svgHtml += polyPixelX + ',' + polyPixelY + ' '
          }
-		 if (algorithm_id === 'dotnuclei' || objectType === 'rectDot') {
+		 if ( (algorithm_id.startsWith('dotnuclei')) || (objectType === 'rectDot') ) {
 		    svgHtml += '" style="fill:transparent; stroke:aqua; stroke-width:3; stroke-dasharray: 8 4;"/>' 
 		 }
          else {
@@ -374,6 +374,12 @@ annotools.prototype.generateSVG = function (annotations) {
         } else {
           return;
         }
+	    if (event.target.nodeName == 'circle') {
+            //var id = event.target.id;
+            self.menageCircleAnnot(annotations, self);
+		}
+	    else {
+			
         var panel = jQuery('#panel').show('slide')
         panel.html('');
         jQuery(".annotationsvg").css("opacity", 0.5);
@@ -417,18 +423,24 @@ annotools.prototype.generateSVG = function (annotations) {
             var line = "<div class='markupFeature'><div class='markupFeatureName'>"+feature.name +"</div> <div class='markupFeatureValue'>"+feature.value+"</div></div>";
             content+=line;
           }
-
-          content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
+          
+          if (data.provenance.analysis.execution_id.startsWith('dotnuclei')) {
+             content += "<button class='btn-danger btn' id='deleteAnnot'>Delete</button>";
+          }
+          else {
+             content += "<button class='btn-danger btn' id='deleteAnnot'><a href='#confirmDelete' rel='modal:open'>Delete</a></button>";
+          }
+          
           content += "<button class='btn' id='cancelPanel'>Cancel</button>";
           content +="</div>";
           var cancel = function () {
            
-            jQuery('#panel').hide('slide')
+            jQuery('#panel').hide('slide');
+            self.getMultiAnnot();
 
           }
 
           panel.html(content);
-
 
           jQuery("#cancelPanel").click(function(){cancel();});
 
@@ -437,6 +449,10 @@ annotools.prototype.generateSVG = function (annotations) {
             //$("#confirmDelete").css(
             //console.log(data.provenance.analysis.source);
             if(data.provenance.analysis.source == "human"){
+              if (data.provenance.analysis.execution_id.startsWith('dotnuclei')) {
+                  self.deleteRectDotAnnot(data, id, self);
+              }
+              else {
               jQuery("#confirmDeleteButton").click(function(){
                 var secret = jQuery("#deleteSecret").val();
                 var payload = {
@@ -455,12 +471,15 @@ annotools.prototype.generateSVG = function (annotations) {
                   }
                 });
               });
+              } //end else
             } else {
               alert("Can't delete computer generated segments");
             }
           });
 
         });
+			
+      } //end else
     
   })
 
