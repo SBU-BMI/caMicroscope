@@ -24,6 +24,7 @@ annotools.prototype.drawDots = function() {
     var msgDeleteDot = '\nRight click to delete';
     
     var markup_svg = document.getElementById('markups');
+	
     
     if (!markup_svg)
     {
@@ -106,6 +107,7 @@ annotools.prototype.drawDots = function() {
             .attr('r', circleParameters.radius)
             .style('fill', function(d) {
                     var region;
+				    var fillColor = '';
                     var radios = document.getElementsByTagName('input');
                 
                     for (var i = 0; i < radios.length; i++) {

@@ -297,7 +297,7 @@ annotools.prototype.deleteRectDotAnnot = function(annotation, annotId, annotools
     }
 	
 				
-    if ((dataUsername == currentUsername) || (dataSuperuser == currentUsername)) {
+    if ((dataUsername == currentUsername) || (dataSuperuser == currentUsername || (!isUsernameExist) || (!isSuperuserExist))) {
        //alert('Authorized');
        //confirm
        var isConfirm = confirm("Are you sure you want to delete this dashed rectangle?\nOK or Cancel.");
@@ -312,13 +312,13 @@ annotools.prototype.deleteRectDotAnnot = function(annotation, annotId, annotools
                   data:(payload),
                   success: function(data) {
                       console.log(data);
-                      jQuery("#panel").hide("slide");
+                      //jQuery("#panel").hide("slide");
                       annotools.getMultiAnnot();
                    }
                });
             }
             else {
-               jQuery("#panel").hide("slide");
+               //jQuery("#panel").hide("slide");
                annotools.getMultiAnnot();
             }
        }
@@ -391,7 +391,7 @@ annotools.prototype.menageCircleAnnot = function(annotations, annotools) {
           jQuery("#deleteAnnot").click(function(e) {
             
              if(annotation.provenance.analysis.execution_id.startsWith('dotnuclei')) {
-			   alert ('startswith');
+			   
 	             var isUsernameExist = annotation.properties.annotations.hasOwnProperty('username');
                  var annotUsername = [];
                  var isSuperuserExist = annotation.properties.annotations.hasOwnProperty('superuser');
@@ -408,6 +408,24 @@ annotools.prototype.menageCircleAnnot = function(annotations, annotools) {
 				 console.log(typeof annotUsername);
 				 console.log(typeof currentUsername);
 				 console.log(typeof annotSuperuser);
+				 
+				  var payload = {
+                         "id": id,
+                         "secret": ''
+                     }
+				     jQuery.ajax({
+                         url: 'api/Data/getProperties.php?id='+id,
+                         type: 'DELETE',
+                         data:(payload),
+                         success: function(data){
+                             console.log(data);
+                             //jQuery("#panel").hide("slide");
+							 annotation = {};
+                             annotools.getMultiAnnot();
+                         }
+                     });
+				 
+				 /*
                  if ((annotUsername == currentUsername) || (annotSuperuser == currentUsername)) {
 			         //alert('Authorized');
 			         var payload = {
@@ -429,7 +447,7 @@ annotools.prototype.menageCircleAnnot = function(annotations, annotools) {
 			        alert('HereError deleting markup! You are not authorized to perform this operation');
 				    jQuery("#panel").hide("slide");
                     annotools.getMultiAnnot();
-			      }
+			      }*/
               } else {
                   alert("Error deleting markup! You are not authorized to perform this operation");
               }
@@ -441,6 +459,13 @@ annotools.prototype.menageCircleAnnot = function(annotations, annotools) {
             
 			  console.log('Edit Before post annotation:' + JSON.stringify(annotation, null, 4));
 			  // create geoJson
+			  
+			  // check if annotation was not selected (or deleted)
+			  if ( Object.getOwnPropertyNames(annotation).length === 0 ) {
+				  alert('Please select a dot');
+				  
+				  return;
+			  }
 			  
 			  // set values
 			  var geometryType = annotation.geometry.type;
@@ -551,15 +576,90 @@ annotools.prototype.menageCircleAnnot = function(annotations, annotools) {
 	             y: cy
 	
              }
+			  
+			  
+			 // Step 1: DELETE
+			 if ( Object.getOwnPropertyNames(editAnnot).length !== 0 ) {
+			     var payload = {
+                         "id": id,
+                         "secret": ''
+                     }
+				     jQuery.ajax({
+                         url: 'api/Data/getProperties.php?id='+id,
+                         type: 'DELETE',
+                         data:(payload),
+                         success: function(data){
+                             console.log(data);
+                             //jQuery("#panel").hide("slide");
+                             annotools.getMultiAnnot();
+							 
+							 //aj add post
+							 console.log('Post editAnnot:' + JSON.stringify(editAnnot, null, 4));
+			                 //Step 2: POST
+			                 // Post annotation
+                             annotools.addOldAnnot(editAnnot);
+							 
+							 //save aj
+							 
+							 
+							 //save
+	  
+			                 console.log('Success edit');
+							 
+							 
+							 //aj end post
+							 
+                         }
+                     });
+			 }
+			  
+			 
+			 // Step 2: POST
   
 
-             console.log('Post editAnnot:' + JSON.stringify(editAnnot, null, 4));
+            // console.log('Post editAnnot:' + JSON.stringify(editAnnot, null, 4));
 			  
 			 // Post annotation
-             annotools.addnewAnnot(editAnnot);
+            // annotools.addnewAnnot(editAnnot);
 	  
-			 console.log('Success edit');
+			// console.log('Success edit');
              
           });
           // end edit
 }
+
+
+annotools.prototype.addOldAnnot = function (oldAnnot) // Add Old Annotations
+{
+  
+  console.log(oldAnnot);
+  this.saveOldAnnot(oldAnnot);
+  // console.log("saved annotation")
+
+  this.displayGeoAnnots();
+}
+
+annotools.prototype.saveOldAnnot = function (annotation) // Save Annotation
+{
+  var self = this;
+  console.log('Save annotation function')
+  console.log(annotation)
+  jQuery.ajax({
+    'type': 'POST',
+    url: 'api/Data/getAnnotSpatial.php',
+    data: annotation,
+    success: function (res, err) {
+      console.log("response: ")
+      console.log(res)
+      if(res == "unauthorized"){
+        alert("Error saving markup!");
+      } else {   
+        //alert("Successfully edit markup!");
+      }
+      console.log(err)
+      self.getMultiAnnot();
+      console.log('succesfully posted')
+    }
+  })
+}
+
