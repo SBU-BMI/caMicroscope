@@ -121,6 +121,9 @@
 		
           var cancerType = "<?php echo $_SESSION["cancerType"] ?>";
           console.log(cancerType);
+            
+          var cancerTypeOther = "<?php echo $_GET["cancerType"] ?>";
+		  console.log(cancerTypeOther);
 			
 		  //authentication start (setauthentication.php)
 		  var sessionUserEmail = <?php echo '"' . $_SESSION['email'] . '"' ?>;
@@ -188,7 +191,8 @@ function isAnnotationActive(){
         var annotationHandler = new AnnotoolsOpenSeadragonHandler(viewer, {});
         annotool= new annotools({
                 canvas:'openseadragon-canvas',
-                iid: tissueId, 
+                iid: tissueId,
+                cancerType: cancerTypeOther,
                 viewer: viewer,
                 annotationHandler: annotationHandler,
                 mpp:MPP,

@@ -45,6 +45,9 @@ function goodalgo (data, status) {
     n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
     n.key = i.toString()
     n.refKey = data[i].provenance.analysis_execution_id
+    if (n.refKey.startsWith('dotnuclei')) {
+        n.selected = true;
+    }
     n.color = available_colors[i]
     algorithm_color[data[i].provenance.analysis_execution_id] = available_colors[i]
     blob.push(n)
@@ -91,6 +94,9 @@ function goodalgo (data, status) {
       annotool.getMultiAnnot()
     }
   })
+  //tmp
+  jQuery('#tree').attr('algotree', true)
+  annotool.getMultiAnnot();
 }
 
 ToolBar.prototype.toggleAlgorithmSelector = function () {
@@ -184,6 +190,15 @@ ToolBar.prototype.createButtons = function () {
      * Ganesh
      * Mootools to Jquery for creation of toolbar buttons
      */
+    this.homebutton = jQuery('<img>', {
+      title: 'SBU main branch',
+      class: 'toolButton firstToolButtonSpace inactive',
+      src: 'images/home_rest.png',
+      id: 'defaultHomeButton'
+    })
+    tool.append(this.homebutton) 
+    
+    
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
       class: 'toolButton firstToolButtonSpace inactive',
@@ -303,6 +318,16 @@ ToolBar.prototype.createButtons = function () {
     /*
      * Event handlers on click for the buttons
      */
+    this.homebutton.on('click', function () {
+        this.mode = 'home';
+        var tissueId = annotool.iid;
+	    //console.log(tissueId);
+        var cancerType = annotool.cancerType;	
+        //console.log(cancerType);
+        location.href = "/camicroscope/osdCamicroscope.php?tissueId=" + tissueId + "&cancerType=" + cancerType;
+    }.bind(this));
+	
+	
     this.rectbutton.on('click', function () {
       //console.log(this.mode);
       if(this.annotools.mode == 'rect'){
@@ -397,7 +422,7 @@ ToolBar.prototype.createButtons = function () {
       this.mode = 'measure'
       this.drawMarkups()
     }.bind(this))
-
+    
     this.hidebutton.on('click', function () {
       this.annotools.toggleMarkups()
     }.bind(this))
