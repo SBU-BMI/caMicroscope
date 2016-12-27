@@ -521,15 +521,13 @@ annotools.prototype.manageCircleAnnot = function(annotations) {
 
 
 annotools.prototype.addEditedAnnot = function (editedAnnot) {
-    //console.log(editedAnnot);
     this.saveEditedAnnot(editedAnnot);
     this.displayGeoAnnots();
 }
 
 annotools.prototype.saveEditedAnnot = function (annotation) {
     var self = this;
-    //console.log(annotation);
-    
+
     jQuery.ajax({
         'type': 'POST',
         url: 'api/Data/getAnnotSpatial.php',
