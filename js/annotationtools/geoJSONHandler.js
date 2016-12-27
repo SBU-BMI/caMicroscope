@@ -315,9 +315,9 @@ annotools.prototype.generateSVG = function (annotations) {
             // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
             svgHtml += polyPixelX + ',' + polyPixelY + ' '
          }
-		 //if ( (algorithm_id.startsWith('dotnuclei')) || (objectType === 'rectDot') ) {
          if ((self.isDotToolExecutionId(annotation)) || (objectType === 'rectDot') ) {
-		    svgHtml += '" style="fill:transparent; stroke:aqua; stroke-width:3; stroke-dasharray: 8 4;"/>' 
+		    svgHtml += '" style="fill:transparent; stroke:aqua; stroke-width:3; stroke-dasharray: 8 4;"' 
+			svgHtml += '><title>' + self.generateTextForRectDotByAnnotation(annotation, id) + '</title></polygon>'
 		 }
          else {
          //svgHtml += '" style="fill: transparent; stroke: lime; stroke-width:2.5"/>'
@@ -409,9 +409,12 @@ annotools.prototype.generateSVG = function (annotations) {
             console.log(e);
           }
           for(var i in properties){
+			  
+			if (i == 'created_on' || i == 'updated_on') {
+                properties[i] = new Date(properties[i]).toLocaleDateString();
+            }
             
             if(i == "secret"){
-
             } else {
               var line = "<div class='markupProperty'><strong>"+i+"</strong>: " + properties[i]+"</div>";
               content+=line;

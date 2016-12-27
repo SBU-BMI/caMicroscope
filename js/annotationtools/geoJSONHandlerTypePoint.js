@@ -149,7 +149,8 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
         updatedOn = new Date(updatedOn).toLocaleDateString();
     }
    
-    var text = region;
+	var text = 'Circle Details:';
+	var lymphocyteRegion = 'Lymphocyte';
     var opacityOver = '0.5';
     var opacityOut = '1';
 	
@@ -158,12 +159,21 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
         currentRadius = 3;
     }
 	
+	if (region && region === lymphocyteRegion) {
+        fillColor = 'lime';
+        hoverColor = 'lime';
+    }
+	
     if (fillColor === undefined) {
         fillColor = '#ffff00';
         hoverColor = '#ffff00';
     }
 	
     if (text) {
+		if (region) {
+		    text += '\n';
+            text += region;
+		}
 	
         if (additionalAnnotation) {
             text += '\n';
@@ -213,6 +223,52 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
 	}
 	
     return svgHtml;
+}
+
+
+annotools.prototype.generateTextForRectDotByAnnotation = function(annotation, annotationId) {
+	
+	var text = 'Dashed Rectangle Details:';
+	var id = annotationId;
+	
+	var region = annotation.properties.annotations.region;
+    var additionalAnnotation = annotation.properties.annotations.additional_annotation;
+    var additionalNotes = annotation.properties.annotations.additional_notes;
+    var createdBy = annotation.properties.annotations.created_by;
+    var createdOn = annotation.properties.annotations.created_on;
+    if (createdOn) {
+        createdOn = new Date(createdOn).toLocaleDateString();
+    }
+	
+	if (text) {
+		
+		if (region) {
+		    text += '\n';
+            text += region;
+		}
+	
+        if (additionalAnnotation) {
+            text += '\n';
+            text += additionalAnnotation;
+        }
+		
+        if (additionalNotes) {
+            text += '\n';
+            text += additionalNotes;
+        }
+        
+        if (createdBy) {
+            text += '\n';
+            text += 'Created by: ' + createdBy;
+        }
+        
+        if (createdOn) {
+            text += '\n';
+            text += 'Created on: ' + createdOn;
+        }
+    }
+	
+	return text;
 }
 
 
@@ -348,7 +404,7 @@ annotools.prototype.deleteRectDotAnnot = function(annotation, annotId) {
         }
     }
     else {
-        self.getUnauthorizedMsg();
+        self.getUnauthorizedDeleteMsg();
         jQuery('#panel').hide('slide');
         self.getMultiAnnot();
     }               
@@ -359,21 +415,24 @@ annotools.prototype.manageCircleAnnot = function(annotations) {
     var self = this;
     var annotations = this.annotations;
     var annotation = {};
-    jQuery('#panel').height(320);
+    jQuery('#panel').height(400).width(260);
     var panel = jQuery('#panel').show('slide');
     //jQuery('#panel').height( 300 ).css({backgroundColor: 'white'});          
     var id = event.target.id;
     var url = "api/Data/getProperties.php?id=" + id;
     var content = '';
     var panelBody = '';
+	var bacgroundDefault = 'white';
+	var colorImportant = 'maroon';
+	var colorDefault = 'black';
     
     panel.html('');
     jQuery(".annotationsvg").css("opacity", 0.5);
     jQuery("#" + event.target.id).css("opacity", 1);
     
     content   += "<div id = 'panelHeader'><h4>Manage Annotations</h4></div>";
-    panelBody += "<div id='panelBody' style='background:white;height:280px;'>";
-    panelBody += "<div class='markupProperty' style='color:maroon;'><strong>Annotation Details:</strong></div>";
+    panelBody += "<div id='panelBody' style='background:" + bacgroundDefault + ";height:360px;width:260px;'>";
+    panelBody += "<div class='markupProperty' style='color:" + colorImportant + ";'><strong>Annotation Details:</strong></div>";
     
     if (annotations) {
         for (var i in annotations) {
@@ -394,7 +453,7 @@ annotools.prototype.manageCircleAnnot = function(annotations) {
                     if(j == "secret") {
                     }
                     else {
-                        var line = "<div class='markupProperty' style='color:black;'><strong>" + j + "</strong>: " + properties[j] + "</div>";
+                        var line = "<div class='markupProperty' style='color:" + colorDefault + ";'><strong>" + j + "</strong>: " + properties[j] + "</div>";
                         panelBody += line;
                     }
                 }
@@ -403,9 +462,9 @@ annotools.prototype.manageCircleAnnot = function(annotations) {
     }
     
     content += panelBody;
-    content += "<button class='btn' id='editDotAnnot' style='background:green'>Change</button>";
-    content += "<button class='btn-danger btn' id='deleteAnnot' title='Delete selected dot'>Delete</button>";
-    content += "<button class='btn' id='cancelPanel'>Cancel</button>";
+    content += "<div style='display:inline-block'><button class='btn' id='editDotAnnot' style='background:green' title='Change cell type'>Change</button>";
+	content += "<button class='btn' id='cancelPanel' title='Close panel'>Cancel</button></div>";
+    content += "<button class='btn-danger btn' id='deleteAnnot' title='Delete selected annotation'>Delete</button>";
     content +="</div>";
     
     panel.html(content);
@@ -432,8 +491,8 @@ annotools.prototype.manageCircleAnnot = function(annotations) {
                  
                  var newContent = '';
                  newContent += "<div id = 'panelHeader'><h4>Information Message</h4></div>";
-                 newContent += "<div id='panelBody' style='background:white;height:220px;'>";
-                 newContent += "<div class='markupProperty' style='color:maroon;'><strong>Please select a dot<strong></div>";
+                 newContent += "<div id='panelBody' style='background:" + bacgroundDefault + ";height:220px;'>";
+                 newContent += "<div class='markupProperty' style='color:" + colorImportant + ";'><strong>Please select a dot</strong></div>";
                  newContent += "<button class='btn' id='cancelPanel'>Cancel</button>";
                  newContent +="</div>";
                  panel.html(newContent);
@@ -442,7 +501,7 @@ annotools.prototype.manageCircleAnnot = function(annotations) {
                  }); 
              }
              else {
-                 self.getUnauthorizedMsg();
+                 self.getUnauthorizedDeleteMsg();
                  jQuery("#panel").hide("slide");
                  self.getMultiAnnot();
              }
@@ -459,62 +518,67 @@ annotools.prototype.manageCircleAnnot = function(annotations) {
             self.getSelectAnnotMsg();
             return;
         }
-			  
-        // set values
-        var editedAnnot = self.generateEditedGeoTemplateTypePoint(annotation, id);
-        // step 1: DELETE
-        if ( Object.getOwnPropertyNames(editedAnnot).length !== 0 && id != '') {
-            var payload = {
-               "id": id,
-               "secret": ''
-            }
+		
+        // check execution id
+        if(self.isDotToolExecutionId(annotation)) { 
+            //check if user is authorized
+            if (self.isUserAuthorized(annotation)) {
+                // set values
+                var editedAnnot = self.generateEditedGeoTemplateTypePoint(annotation, id);
+                // step 1: DELETE
+                if ( Object.getOwnPropertyNames(editedAnnot).length !== 0 && id != '') {
+					
+                    var payload = {
+                        "id": id,
+                        "secret": ''
+                    }
             
-            jQuery.ajax({
-                url: 'api/Data/getProperties.php?id='+id,
-                type: 'DELETE',
-                data:(payload),
-                success: function(data){
-                    // console.log(data);
-                    // jQuery("#panel").hide("slide");
-                    self.getMultiAnnot();
-                    // console.log('Post editedAnnot:' + JSON.stringify(editedAnnot, null, 4));
-                    // step 2: POST
-                    self.addEditedAnnot(editedAnnot);
-                    var cellType = editedAnnot.properties.annotations.region;
-                    var colorStyle = 'black';
-                    if (cellType === 'Lymphocyte') {
-                        colorStyle = 'green';
-                    }
-                    else {
-                        colorStyle = 'orange';
-                    }
-                    editedAnnot = {};
-                    id = '';
-                    //
-                     panel.html('');
-                 
-                     jQuery('#panel').height(260);
-                    
-                    
-                     var newContent = '';
-                     newContent += "<div id = 'panelHeader'><h4>Information Message</h4></div>";
-                     newContent += "<div id='panelBody' style='background:white;height:220px;'>";
-                     newContent += "<div class='markupProperty' style='color:" + colorStyle + "'<strong>The selected annotation has been successfully changed into the " + cellType + " type.<strong></div><br><br>";
-                     newContent += "<div class='markupProperty' style='color:maroon;'><strong>Please select a dot<strong></div>";
-                     newContent += "<button class='btn' id='cancelPanel'>Cancel</button>";
-                     newContent +="</div>";
-                     panel.html(newContent);
-                     jQuery("#cancelPanel").click(function() {
-                        self.cancel();
-                     });
-                    //
+                    jQuery.ajax({
+                        url: 'api/Data/getProperties.php?id='+id,
+                        type: 'DELETE',
+                        data:(payload),
+                        success: function(data) {
+                            // console.log(data);
+                            // jQuery("#panel").hide("slide");
+                            self.getMultiAnnot();
+                            // console.log('Post editedAnnot:' + JSON.stringify(editedAnnot, null, 4));
+                            // step 2: POST
+                            self.addEditedAnnot(editedAnnot);
+                            var cellType = editedAnnot.properties.annotations.region;
+					        var backgroundStyle = self.getBackgroundStyleByCellType(cellType);
+                            editedAnnot = {};
+                            id = '';
+                            panel.html('');
+                            jQuery('#panel').height(280).width(260);
+							
+                            var newContent = '';
+                            newContent += "<div id = 'panelHeader'><h4>Information Message</h4></div>";
+                            newContent += "<div id='panelBody' style='background:" + backgroundStyle + ";height:240px;width:260px;'>";
+                            newContent += "<div class='markupProperty' style='color:" + colorDefault + "'><strong>The selected annotation has been successfully changed into the " + cellType + " type.</strong></div><br>";
+                            newContent += "<div style='color:maroon;'><strong>Please select a dot</strong></div>";
+                            newContent += "<button class='btn' id='cancelPanel'>Cancel</button>";
+                            newContent +="</div>";
+                            panel.html(newContent);
+							
+                            jQuery("#cancelPanel").click(function() {
+                            self.cancel();
+                          });
+                        }
+                    });
+                }else {
+                    self.getSelectAnnotMsg();
+                    return;
                 }
-            });
-        }
-        else {
-            self.getSelectAnnotMsg();
-            return;
-        }
+			} //authorized
+			else {
+				 self.getUnauthorizedEditMsg();
+                 jQuery("#panel").hide("slide");
+                 self.getMultiAnnot();
+			}
+		} //execution id
+		else {
+		    self.getUnauthorizedMsg();	//not dotnuclei
+		}
     });
     // end edit
 } //end manage
@@ -570,7 +634,7 @@ annotools.prototype.getSuperuser = function(annotation) {
         annotSuperuser = defaultSuperuser;
     }
     
-    console.log('annotSuperuser: ' + annotSuperuser);
+    //console.log('annotSuperuser: ' + annotSuperuser);
     
     return annotSuperuser;   
 }
@@ -597,8 +661,6 @@ annotools.prototype.getDotToolDefaultKey = function(annotation) {
     else {
         annotDotToolKey = defaultDotToolKey;
     }
-    
-    console.log('annotDotToolKey: ' + annotDotToolKey);
     
     return annotDotToolKey;   
     
@@ -636,7 +698,17 @@ annotools.prototype.isUserAuthorized = function(annotation) {
 
 annotools.prototype.getUnauthorizedMsg = function() {
     
+    return alert('Error! You are not authorized to perform this operation');
+}
+
+annotools.prototype.getUnauthorizedDeleteMsg = function() {
+    
     return alert('Error deleting markup! You are not authorized to perform this operation');
+}
+
+annotools.prototype.getUnauthorizedEditMsg = function() {
+    
+    return alert('Error editing markup! You are not authorized to perform this operation');
 }
 
 annotools.prototype.getSelectAnnotMsg = function() {
@@ -664,8 +736,10 @@ annotools.prototype.generateEditedGeoTemplateTypePoint = function (annotation, a
     var cy = annotation.geometry.coordinates[0][0][1];
     var objectType = annotation.object_type;
     var region = annotation.properties.annotations.region;
-    var additionalAnnotation = annotation.properties.annotations.additional_annotation;
-    var additionalNotes = annotation.properties.annotations.additional_notes;
+    //var additionalAnnotation = annotation.properties.annotations.additional_annotation;
+    //var additionalNotes = annotation.properties.annotations.additional_notes;
+	var additionalAnnotation = '';
+    var additionalNotes = '';
     var secret = annotation.properties.annotations.secret;
     var username = self.username;
     var createdBy = annotation.properties.annotations.created_by;
@@ -782,3 +856,18 @@ annotools.prototype.cancel = function() {
     jQuery('#panel').hide('slide');
     self.getMultiAnnot();  
 }
+
+annotools.prototype.getBackgroundStyleByCellType = function(cellType) {
+	
+    var backgroundStyle = 'white';
+	
+	if (cellType === 'Lymphocyte') {
+        backgroundStyle = '#e7ffe7';
+    }
+    else {
+        backgroundStyle = '#e5e5c9';
+    }
+	
+    return backgroundStyle;	
+}
+
