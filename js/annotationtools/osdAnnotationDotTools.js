@@ -326,24 +326,18 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
     
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
-        var secretDot = 'dot1';
-        var superUsername = 'Tianhao.Zhao';
-		
+       
         var errorUnauthorizedMsg = 'Error saving markup! You are not authorized to perform that operation';
-		/*
-        if ( val.secret !== secretDot ) {
-            alert(errorSecretMsg);
-            return;
-        }
-		*/
         var count = 1;
         for( var i = 0; i < newAnnots.length; i++ ) 
         { //for loop start
             var annotation = newAnnots[i];
             annotation.properties.annotations = val;
-            annotation.properties.annotations.secret = secretDot;
+            annotation.properties.annotations.secret = annotools.getDotToolDefaultKey(annotation);
             annotation.properties.annotations.username = annotools.username;
-            annotation.properties.annotations.superuser = superUsername;
+            annotation.properties.annotations.superuser = annotools.getSuperuser(annotation);
+            annotation.properties.annotations.created_by = annotools.username;
+            annotation.properties.annotations.created_on = Date.now();
             
             if (annotation.properties.fill_color === regionInfo.fillColorLymphocyte) {
                 annotation.properties.annotations.region = regionInfo.regionLymphocyte;
@@ -558,15 +552,13 @@ annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annot
 	
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
-		var secretDot = 'dot1';
-        var superUsername = 'Tianhao.Zhao';
-		
         newAnnot.properties.annotations = val;
-        newAnnot.properties.annotations.secret = secretDot;
+        newAnnot.properties.annotations.secret = annotools.getDotToolDefaultKey(newAnnot);
         newAnnot.properties.annotations.username = annotools.username;
-        newAnnot.properties.annotations.superuser = superUsername;
-        
-		
+        newAnnot.properties.annotations.superuser = annotools.getSuperuser(newAnnot);
+        newAnnot.properties.annotations.created_by = annotools.username;
+        newAnnot.properties.annotations.created_on = Date.now();
+       
         // Post annotation
         annotools.addnewAnnot(newAnnot);
 	  
@@ -589,6 +581,6 @@ annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annot
     jQuery('legend').css({'color':'white', 'font-size': '10pt', 'cursor': 'pointer'});
     //jQuery( "#annotationsForm span:not(:contains('Non'))" ).css('color', regionInfo.fillColorLymphocyte);
     //jQuery( "#annotationsForm span:contains('Non')" ).css('color', regionInfo.fillColorNonLymphocyte);
-		
+   
   })
 }

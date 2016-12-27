@@ -298,7 +298,7 @@ annotools.prototype.generateSVG = function (annotations) {
 		
       if ( geometryType === 'Point' ) {
 		  
-         svgHtml += self.generateCircleSVGByAnnotation(annotation, id, self);
+         svgHtml += self.generateCircleSVGByAnnotation(annotation, id);
       }
       else {
 
@@ -315,7 +315,8 @@ annotools.prototype.generateSVG = function (annotations) {
             // polySVG += nativepoints[k][0] + ',' + nativepoints[k][1] + ' '
             svgHtml += polyPixelX + ',' + polyPixelY + ' '
          }
-		 if ( (algorithm_id.startsWith('dotnuclei')) || (objectType === 'rectDot') ) {
+		 //if ( (algorithm_id.startsWith('dotnuclei')) || (objectType === 'rectDot') ) {
+         if ((self.isDotToolExecutionId(annotation)) || (objectType === 'rectDot') ) {
 		    svgHtml += '" style="fill:transparent; stroke:aqua; stroke-width:3; stroke-dasharray: 8 4;"/>' 
 		 }
          else {
@@ -376,7 +377,7 @@ annotools.prototype.generateSVG = function (annotations) {
         }
 	    if (event.target.nodeName == 'circle') {
             //var id = event.target.id;
-            self.menageCircleAnnot(annotations, self);
+            self.manageCircleAnnot(annotations);
 		}
 	    else {
 			
@@ -424,7 +425,8 @@ annotools.prototype.generateSVG = function (annotations) {
             content+=line;
           }
           
-          if (data.provenance.analysis.execution_id.startsWith('dotnuclei')) {
+          //if (data.provenance.analysis.execution_id.startsWith('dotnuclei')) {
+          if (self.isDotToolExecutionId(data)) {
              content += "<button class='btn-danger btn' id='deleteAnnot'>Delete</button>";
           }
           else {
@@ -449,8 +451,8 @@ annotools.prototype.generateSVG = function (annotations) {
             //$("#confirmDelete").css(
             //console.log(data.provenance.analysis.source);
             if(data.provenance.analysis.source == "human"){
-              if (data.provenance.analysis.execution_id.startsWith('dotnuclei')) {
-                  self.deleteRectDotAnnot(data, id, self);
+              if (self.isDotToolExecutionId(data)) {
+                  self.deleteRectDotAnnot(data, id);
               }
               else {
               jQuery("#confirmDeleteButton").click(function(){

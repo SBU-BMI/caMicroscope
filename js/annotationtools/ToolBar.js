@@ -191,13 +191,40 @@ ToolBar.prototype.createButtons = function () {
      * Mootools to Jquery for creation of toolbar buttons
      */
     this.homebutton = jQuery('<img>', {
-      title: 'SBU main branch',
-      class: 'toolButton firstToolButtonSpace inactive',
-      src: 'images/home_rest.png',
-      id: 'defaultHomeButton'
+        title: 'SBU Main Branch',
+        class: 'toolButton firstToolButtonSpace inactive',
+        src: 'images/home_rest.png',
+        id: 'defaultHomeButton'
     })
     tool.append(this.homebutton) 
     
+    this.spacer1 = jQuery('<img>', {
+        'class': 'spacerButton inactive',
+        'src': 'images/spacer.svg'
+    });
+    tool.append(this.spacer1);
+    
+    this.rectDotMarkupButton = jQuery('<img>', {
+        'title': 'Rectangle Markup',
+        'class': 'toolButton inactive',
+        'src': 'images/rect.svg',
+        'id': 'markupRectDotButton'
+    });
+    tool.append(this.rectDotMarkupButton); 
+	  
+    this.dotToolButton = jQuery('<img>', {
+        'title': 'Dot Spatial Annotation Tool',
+        'class': 'toolButton inactive',
+        'src': 'images/color.svg',
+        'id': 'drawDotButton'
+    });
+    tool.append(this.dotToolButton); // Dot Tool
+      
+    this.spacer1 = jQuery('<img>', {
+        'class': 'spacerButton inactive',
+        'src': 'images/spacer.svg'
+    });
+    //tool.append(this.spacer1);
     
     this.rectbutton = jQuery('<img>', {
       title: 'Draw Rectangle',
@@ -205,14 +232,14 @@ ToolBar.prototype.createButtons = function () {
       src: 'images/rect.svg',
       id: 'drawRectangleButton'
     })
-    tool.append(this.rectbutton)
+    //tool.append(this.rectbutton)
 
     this.ellipsebutton = jQuery('<img>', {
       'title': 'Draw Ellipse',
       'class': 'toolButton inactive',
       'src': 'images/ellipse.svg'
     })
-    tool.append(this.ellipsebutton)
+    //tool.append(this.ellipsebutton)
 
     this.pencilbutton = jQuery('<img>', {
       'title': 'Draw Freeline',
@@ -220,7 +247,7 @@ ToolBar.prototype.createButtons = function () {
       'src': 'images/pencil.svg',
       'id': 'drawFreelineButton'
     })
-    tool.append(this.pencilbutton) // Pencil Tool
+    //tool.append(this.pencilbutton) // Pencil Tool
 
     this.measurebutton = jQuery('<img>', {
       'title': 'Measurement Tool',
@@ -285,14 +312,15 @@ ToolBar.prototype.createButtons = function () {
       'class': 'toolButton inactive',
       'src': 'images/partDownload.svg'
     })
-     tool.append(this.partialDownloadButton)  //Partial Download
+     //tool.append(this.partialDownloadButton)  //Partial Download
      
     this.spacer1 = jQuery('<img>', {
       'class': 'spacerButton inactive',
       'src': 'images/spacer.svg'
     });
-    tool.append(this.spacer1);
+    //tool.append(this.spacer1);
     
+    /*
     this.dotToolButton = jQuery('<img>', {
         'title': 'Dot Spatial Annotation Tool',
         'class': 'toolButton inactive',
@@ -314,7 +342,8 @@ ToolBar.prototype.createButtons = function () {
       'src': 'images/spacer.svg'
     });
     tool.append(this.spacer1);
-	
+	*/
+      
     /*
      * Event handlers on click for the buttons
      */
