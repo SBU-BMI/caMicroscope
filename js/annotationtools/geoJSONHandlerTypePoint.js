@@ -149,6 +149,7 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
         updatedOn = new Date(updatedOn).toLocaleDateString();
     }
    
+	//var annotObjectIdLast = annotation.properties.annotations.annot_object_id;
 	var text = 'Circle Details:';
 	var lymphocyteRegion = 'Lymphocyte';
     var opacityOver = '0.5';
@@ -204,6 +205,17 @@ annotools.prototype.generateCircleSVGByAnnotation = function(annotation, annotat
             text += '\n';
             text += 'Updated on: ' + updatedOn;
         }
+		/*
+		if (annotObjectIdLast) {
+            text += '\n';
+            text += 'Last Object id: ' + annotObjectIdLast;
+        }
+		
+		if (annotationId) {
+            text += '\n';
+            text += 'Current Object id: ' + annotationId;
+        }
+		*/
     }
     
     for (var k = 0; k < nativepoints.length; k++) {
@@ -747,7 +759,7 @@ annotools.prototype.generateEditedGeoTemplateTypePoint = function (annotation, a
     var updatedBy = self.username;
     var updatedOn = Date.now();
     var superuser = annotation.properties.annotations.superuser;
-    var objectIdOld = annotId;
+    var annotObjectId = annotId;
     var radius = annotation.properties.radius;
     var fillColor = annotation.properties.fill_color;
     var circleIdOld = annotation.properties.circle_id;
@@ -783,7 +795,7 @@ annotools.prototype.generateEditedGeoTemplateTypePoint = function (annotation, a
      console.log(updatedBy);
      console.log(updatedOn);
      console.log(superuser);
-     console.log(objectIdOld);
+     console.log(annotObjectId);
      console.log(radius);
      console.log(fillColor);
      console.log(circleIdOld);
@@ -823,8 +835,8 @@ annotools.prototype.generateEditedGeoTemplateTypePoint = function (annotation, a
                     'created_on': createdOn,
                     'updated_by': updatedBy,
                     'updated_on': updatedOn,
-                    'superuser': superuser,
-                    'object_id_old': objectIdOld
+                    'superuser': superuser
+                    //'annot_object_id': annotObjectId
                 },
                 'radius': radius,
                 'fill_color': fillColor,
