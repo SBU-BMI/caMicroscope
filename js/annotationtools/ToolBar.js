@@ -190,13 +190,21 @@ ToolBar.prototype.createButtons = function () {
      * Ganesh
      * Mootools to Jquery for creation of toolbar buttons
      */
+	this.quipbutton = jQuery('<img>', {
+        title: 'Back to QuIP',
+        class: 'toolButton firstToolButtonSpace inactive',
+        src: 'images/previous_rest.png',
+        id: 'defaultQuipButton'
+    })
+    tool.append(this.quipbutton); 
+	
     this.homebutton = jQuery('<img>', {
         title: 'SBU Main Branch',
-        class: 'toolButton firstToolButtonSpace inactive',
+        class: 'toolButton inactive',
         src: 'images/home_rest.png',
         id: 'defaultHomeButton'
     })
-    tool.append(this.homebutton) 
+    tool.append(this.homebutton); 
     
     this.spacer1 = jQuery('<img>', {
         'class': 'spacerButton inactive',
@@ -347,6 +355,11 @@ ToolBar.prototype.createButtons = function () {
     /*
      * Event handlers on click for the buttons
      */
+	this.quipbutton.on('click', function () {
+        this.mode = 'quip';
+        location.href = "/select.php";
+    }.bind(this));
+	  
     this.homebutton.on('click', function () {
         this.mode = 'home';
         var tissueId = annotool.iid;
