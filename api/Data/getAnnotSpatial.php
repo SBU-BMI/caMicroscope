@@ -62,12 +62,27 @@ switch ($_SERVER['REQUEST_METHOD'])
 
     $secrets = array(
       "human1" => "humantest", // secret => username
-      "dot1" => "dotnuclei",
       "prod1" => "humanProd"
     );
 
     $authorized = false;
     $newExecutionId = "";
+        
+        
+    //dot tool start
+    $POSTexecutionId = $_POST['provenance']['analysis']['execution_id'];
+        
+    if($POSTexecutionId  && (strpos($POSTexecutionId, 'dotnuclei') === 0)){
+        $newExecutionId = $POSTexecutionId;
+        $authorized = true;
+        $jsonAnnotation = json_encode($newAnnotation, JSON_NUMERIC_CHECK);
+        //print_r(json_encode($newAnnotation)); 
+        $postRequest = new RestRequest($url, 'POST', $jsonAnnotation);
+        $postRequest->execute();
+        //echo "success";
+    }
+    //dot tool end
+        
     foreach($secrets as $secret => $username){
       if($POSTsecret === $secret){
         //set execution_id as $username

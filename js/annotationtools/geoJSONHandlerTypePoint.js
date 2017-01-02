@@ -5,7 +5,7 @@ annotools.prototype.generateGeoTemplateTypePoint = function () {
     if(subject_id.substr(0,4) != 'TCGA'){
         subject_id = '';
     }
-
+        
     var geoJSONTemplateTypePoint = {
         'type': 'Feature',
         'parent_id': 'self',
@@ -411,7 +411,7 @@ annotools.prototype.deleteRectDotAnnot = function(annotation, annotId) {
             jQuery('#panel').hide('slide');
         }
         else {
-            //jQuery("#panel").hide("slide");
+            jQuery("#panel").hide("slide");
             self.getMultiAnnot();
         }
     }
@@ -499,11 +499,11 @@ annotools.prototype.manageCircleAnnot = function(annotations) {
                  //
                  panel.html('');
                  
-                 jQuery('#panel').height(260);
+                 jQuery('#panel').height(300);
                  
                  var newContent = '';
                  newContent += "<div id = 'panelHeader'><h4>Information Message</h4></div>";
-                 newContent += "<div id='panelBody' style='background:" + bacgroundDefault + ";height:220px;'>";
+                 newContent += "<div id='panelBody' style='background:" + bacgroundDefault + ";height:260px;'>";
                  newContent += "<div class='markupProperty' style='color:" + colorImportant + ";'><strong>Please select a dot</strong></div>";
                  newContent += "<button class='btn' id='cancelPanel'>Cancel</button>";
                  newContent +="</div>";
@@ -651,33 +651,6 @@ annotools.prototype.getSuperuser = function(annotation) {
     return annotSuperuser;   
 }
 
-annotools.prototype.getDotToolDefaultKey = function(annotation) {
-    
-    var self = this;
-    var defaultDotToolKey = 'dot1';
-    var isDefaultDotToolKeyExist = annotation.properties.annotations.hasOwnProperty('secret');
-    var annotDotToolKey = '';
-    
-    if (isDefaultDotToolKeyExist) {
-        var tmpKey = annotation.properties.annotations.secret;
-        if (typeof tmpKey != 'string') {
-            tmpKey = tmpKey.toString();
-        }
-        if (tmpKey && tmpKey.length > 0) {
-            annotDotToolKey = tmpKey;
-        }
-        else {
-            annotDotToolKey = defaultDotToolKey;
-        }
-    }
-    else {
-        annotDotToolKey = defaultDotToolKey;
-    }
-    
-    return annotDotToolKey;   
-    
-}
-
 annotools.prototype.isUserAuthorized = function(annotation) {
 	
     var self = this;
@@ -730,9 +703,10 @@ annotools.prototype.getSelectAnnotMsg = function() {
 
 annotools.prototype.isDotToolExecutionId = function(annotation) {
     
+    var self = this;
     var isExecutionId = false;
     
-    if(annotation.provenance.analysis.execution_id.startsWith('dotnuclei')) {
+    if(annotation.provenance.analysis.execution_id.startsWith(self.getDotToolExecutionIdPrefix())) {
         isExecutionId = true;
     }
     return isExecutionId;
@@ -881,5 +855,19 @@ annotools.prototype.getBackgroundStyleByCellType = function(cellType) {
     }
 	
     return backgroundStyle;	
+}
+
+annotools.prototype.getDotToolExecutionIdPrefix = function() {
+    
+    var execIdPrefix = 'dotnuclei';
+    
+    return execIdPrefix;
+}
+
+annotools.prototype.getDashedRectExecutionIdPostfix = function() {
+    
+    var execIdPostfix = '-rect';
+    
+    return execIdPostfix;
 }
 

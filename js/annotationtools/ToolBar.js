@@ -45,7 +45,7 @@ function goodalgo (data, status) {
     n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
     n.key = i.toString()
     n.refKey = data[i].provenance.analysis_execution_id
-    if (n.refKey.startsWith('dotnuclei')) {
+    if (n.refKey.startsWith(annotool.getDotToolExecutionIdPrefix())) {
         n.selected = true;
     }
     n.color = available_colors[i]

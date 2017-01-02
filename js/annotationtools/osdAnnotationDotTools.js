@@ -333,11 +333,12 @@ annotools.prototype.promptForAnnotations = function (newAnnots, mode, annotools,
         { //for loop start
             var annotation = newAnnots[i];
             annotation.properties.annotations = val;
-            annotation.properties.annotations.secret = annotools.getDotToolDefaultKey(annotation);
+            annotation.properties.annotations.secret = '';
             annotation.properties.annotations.username = annotools.username;
             annotation.properties.annotations.superuser = annotools.getSuperuser(annotation);
             annotation.properties.annotations.created_by = annotools.username;
             annotation.properties.annotations.created_on = Date.now();
+            annotation.provenance.analysis.execution_id = annotools.getDotToolExecutionIdPrefix();
             
             if (annotation.properties.fill_color === regionInfo.fillColorLymphocyte) {
                 annotation.properties.annotations.region = regionInfo.regionLymphocyte;
@@ -553,12 +554,13 @@ annotools.prototype.promptForRectDotAnnotation = function (newAnnot, mode, annot
     formSchema.onSubmit = function (err, val) {
         // Add form data to annotation
         newAnnot.properties.annotations = val;
-        newAnnot.properties.annotations.secret = annotools.getDotToolDefaultKey(newAnnot);
+        newAnnot.properties.annotations.secret = '';
         newAnnot.properties.annotations.username = annotools.username;
         newAnnot.properties.annotations.superuser = annotools.getSuperuser(newAnnot);
         newAnnot.properties.annotations.created_by = annotools.username;
         newAnnot.properties.annotations.created_on = Date.now();
-       
+        //newAnnot.provenance.analysis.execution_id = 'dotnuclei-rect';
+        newAnnot.provenance.analysis.execution_id = annotools.getDotToolExecutionIdPrefix() + annotools.getDashedRectExecutionIdPostfix();
         // Post annotation
         annotools.addnewAnnot(newAnnot);
 	  
