@@ -110,39 +110,6 @@ AnnotationStore.prototype.fetchAnnotations = function(x1,y1,x2,y2, footprint, al
 
 
 
-AnnotationStore.prototype.fetchMergeSegmentation = function(x1,y1,x2,y2, footprint,algorithms,callback){
-    console.log(algorithms);
-    var self = this;
-
-    var midX = x2;
-    var midY = y2;
-    var algorithms_urlparam = JSON.stringify(algorithms);
-	console.log(algorithms_urlparam);
-    algorithms_urlparam = algorithms_urlparam.replace("[", "%5B");
-    algorithms_urlparam = algorithms_urlparam.replace("]", "%5D");
-    algorithms_urlparam = algorithms_urlparam.replace(/"/g, "%22");
-    console.log(algorithms_urlparam);
-    var url1 = "api/Data/getMergeSegmentation.php?iid="+  self.iid +"&x=" + x1+ "&y=" + y1 + "&x1=" + midX + "&y1=" + midY + "&footprint="+ footprint + "&algorithms=" + algorithms_urlparam;
-	console.log(url1);
-   
-    jQuery.get(url1, function(data){
-	try{
-        var d = JSON.parse(data);
-         console.log(d);
-	} catch (e){
-		callback({"error": "Error"});
-	}
-        self.annotations = d;
-
-        //console.log("fetched data");
-        //console.log(d.length);
-        if(callback)
-            callback(d);
-
-    });
-
-}
-
 
 
 
