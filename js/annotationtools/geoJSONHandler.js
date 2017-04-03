@@ -318,6 +318,18 @@ annotools.prototype.generateSVG = function (annotations) {
             continue;
       }
 
+      if (this.lymheat == false)
+      {
+	if ((annotation.object_type == 'marking') && (annotation.properties.annotations.mark_type == 'LymPos' || annotation.properties.annotations.mark_type == 'LymNeg'))
+	{
+		continue;
+	}
+	if (annotation.object_type == 'heatmap' || annotation.object_type == 'heatmap_multiple')
+	{
+		continue;
+	}
+      }
+
 
       var id = '';
       
@@ -440,6 +452,7 @@ annotools.prototype.generateSVG = function (annotations) {
 	case 'marking':
 		var line_color = '';
 		var stroke_width = 2.5;
+
 		switch (annotation.properties.annotations.mark_type)
 		{
 			case 'LymPos': line_color = 'red'; stroke_width = 2.5*annotation.properties.annotations.mark_width; break;

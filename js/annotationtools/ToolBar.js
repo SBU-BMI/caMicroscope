@@ -41,6 +41,20 @@ function goodalgo (data, status) {
     }
   });
   */  
+  max_ver = 0
+  for (i = 0;i < data.length;i++) {
+    var n = {}
+    n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
+    n.key = i.toString()
+    n.refKey = data[i].provenance.analysis_execution_id
+    if (n.refKey.includes('lym_v')) {
+        ver = parseInt(n.refKey.split('lym_v')[1].split('-')[0]);
+        if (ver > max_ver) {
+            max_ver = ver
+        }
+    }
+  }
+
   var blob = []
   for (i = 0;i < data.length;i++) {
     var n = {}
@@ -48,7 +62,7 @@ function goodalgo (data, status) {
     n.title = "<div class='colorBox' style='background:" + available_colors[i] + "'></div>" + data[i].title
     n.key = i.toString()
     n.refKey = data[i].provenance.analysis_execution_id
-    if (n.refKey == 'lym_v3-high_res' || n.refKey == 'lym_v3-low_res' || n.refKey == 'humanmark') {
+    if (n.refKey == 'lym_v'+max_ver+'-high_res' || n.refKey == 'lym_v'+max_ver+'-low_res' || n.refKey == 'humanmark') {
       n.selected = true
     }
 

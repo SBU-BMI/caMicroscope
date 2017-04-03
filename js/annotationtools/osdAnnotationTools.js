@@ -140,8 +140,8 @@ To save/cancel your work, use the buttons described below:\n\
   this.heatmapColor = ['#feedde','#fecc5c','#fd8d3c','#bd0026', '#33b5ff'];
   this.multipleHeatmapColor = [];
   this.cb_checked = [false, false, false];
-  this.heat_weight = [0.5, 0.5, 0.0];
-  this.prev_heat_weight = [0.5, 0.5, 0.0];
+  this.heat_weight = [0.77, 1.00, 0.0];
+  this.prev_heat_weight = [0.77, 1.00, 0.0];
   this.loadedWeight = false;
   //this.loadHeatmapWeight();
   bar_var1 = document.getElementById('bar1');
@@ -187,6 +187,9 @@ To save/cancel your work, use the buttons described below:\n\
   cb1.style.visibility = "hidden";
   cb2.style.visibility = "hidden";
   cb3.style.visibility = "hidden";
+
+  // Turn on-off lymphocyte heat
+  this.lymheat = true;
 
   /*
    * OpenSeaDragon events
@@ -3283,7 +3286,7 @@ annotools.prototype.loadHeatmapWeight = function()
                 sl1.style.width = lym;
                 sl2.style.width = nec;
                 sl3.style.width = smh;
-		this.prev_heat_weight = [lym, nec, smh];
+                this.prev_heat_weight = [lym, nec, smh];
                 div_lock.innerHTML = "Locked";
                 //var lym_f = parseFloat(lym.substring(0, lym.length)) / 100;
                 //var nec_f = parseFloat(nec.substring(0, nec.length)) / 100;
@@ -3293,10 +3296,10 @@ annotools.prototype.loadHeatmapWeight = function()
                 self.updateHeatVarFromSlideBar();
             } else {
                 console.log('go else');
-                sl1.style.width = '50%';
-                sl2.style.width = '50%';
+                sl1.style.width = '77%';
+                sl2.style.width = '100%';
                 sl3.style.width = '0%';
-		this.prev_heat_weight = [0.5, 0.5, 0];
+                this.prev_heat_weight = [0.77, 1.00, 0];
                 div_lock.innerHTML = "Free";
             }
         }

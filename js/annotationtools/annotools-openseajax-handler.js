@@ -372,6 +372,11 @@ var AnnotoolsOpenSeadragonHandler = function(viewer, options){
                   this.viewer.viewport.panTo(pt, false);
 		  break;
 
+        case "m": 
+                  this.annotool.lymheat = !this.annotool.lymheat;
+		  this.annotool.getMultiAnnot();
+		  break;
+
         case "s": 
 		  if (this.annotool.mode == 'free_markup')
                   {
